@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.example.coinfolio.ui.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_dashboard"
+            app:destination="@id/navigation_add_coins" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_notifications"
+            app:destination="@id/navigation_remove_coins" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_add_coins"
+        android:name="com.example.coinfolio.ui.Addcoins.AddCoinsFragment"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_add_coins" />
+
+    <fragment
+        android:id="@+id/navigation_remove_coins"
+        android:name="com.example.coinfolio.ui.RemoveCoin.RemoveCoinFragment"
+        android:label="@string/title_notifications"
+        tools:layout="@layout/fragment_remove_coins" />
+</navigation>
