@@ -18,7 +18,7 @@ public class AddCoinsFragment extends Fragment {
 
             View view = inflater.inflate(R.layout.fragment_add_coins, container, false);
             // Write a message to the database
-            FirebaseDatabase database = FirebaseDatabase.getInstance(getString(R.string.Firebase_Key));
+            FirebaseDatabase database = FirebaseDatabase.getInstance(getString(R.string.Firebase_Key_API));
             DatabaseReference myRef = database.getReference("message");
 
             myRef.setValue("l;ksadjhfg;lasdkjf!");
