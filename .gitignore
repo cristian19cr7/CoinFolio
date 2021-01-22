@@ -12,5 +12,4 @@
 /captures
 .externalNativeBuild
 .cxx
-/app/src/main/res/values/Keys.xml
 /app/google-services.json
