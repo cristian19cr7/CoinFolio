@@ -39,10 +39,10 @@ public class AddCoinsFragment extends Fragment {
 
             View view = inflater.inflate(R.layout.fragment_add_coins, container, false);
             // Write a message to the database
-            FirebaseDatabase database = FirebaseDatabase.getInstance(getString(R.string.Firebase_Key_API));
+            FirebaseDatabase database = FirebaseDatabase.getInstance("https://coinfolio-87968-default-rtdb.firebaseio.com/");
             DatabaseReference myRef = database.getReference("message");
 
-            myRef.setValue("Hello world!");
+            myRef.setValue("Howdy!");
             String[] CoinList = getCoinsList();
             ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.dropdown_item,R.id.autoComplete_dropdown, CoinList);
             final AutoCompleteTextView textView = view.findViewById(R.id.autoCompleteTextView);
