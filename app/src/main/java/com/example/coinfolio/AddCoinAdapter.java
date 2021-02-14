@@ -16,23 +16,26 @@ import java.util.List;
 
 public class AddCoinAdapter extends RecyclerView.Adapter<AddCoinAdapter.ViewHolder> {
     private List<Coin> localDataSet;
+    private ViewHolder.AssetSelectedListener assetSelectedListener;
     //private List<Coin> localDataSetSearch;
 
     /**
      * Provide a reference to the type of views that you are using
      * (custom ViewHolder).
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView textView, coin_rank;
         private final ImageView imageView;
-
-        public ViewHolder(View view) {
+        private AssetSelectedListener assetListener;
+        public ViewHolder(View view, AssetSelectedListener listener) {
             super(view);
             // Define click listener for the ViewHolder's View
 
-            textView = (TextView) view.findViewById(R.id.item_tv);
+            textView = view.findViewById(R.id.item_tv);
             imageView = view.findViewById(R.id.coinImg);
             coin_rank = view.findViewById(R.id.item_rank_tv);
+            this.assetListener = listener;
+            view.setOnClickListener(this);
         }
 
         public TextView getTextView() {
@@ -42,6 +45,16 @@ public class AddCoinAdapter extends RecyclerView.Adapter<AddCoinAdapter.ViewHold
         {
             return coin_rank;
         }
+
+        @Override
+        public void onClick(View v) {
+            assetListener.OnAssetSelected(getAdapterPosition());
+        }
+
+        public interface AssetSelectedListener
+        {
+            void OnAssetSelected(int position);
+        }
     }
 
     /**
@@ -50,19 +63,21 @@ public class AddCoinAdapter extends RecyclerView.Adapter<AddCoinAdapter.ViewHold
      * @param dataSet String[] containing the data to populate views to be used
      * by RecyclerView.
      */
-    public AddCoinAdapter(List<Coin> dataSet) {
+    public AddCoinAdapter(List<Coin> dataSet, ViewHolder.AssetSelectedListener Listener) {
         localDataSet = dataSet;
+        assetSelectedListener = Listener;
         //localDataSetSearch = new ArrayList<>(dataSet);
     }
 
     // Create new views (invoked by the layout manager)
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         // Create a new view, which defines the UI of the list item
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.add_coin_rv_item, viewGroup, false);
 
-        return new ViewHolder(view);
+        return new ViewHolder(view, assetSelectedListener);
     }
 
     // Replace the contents of a view (invoked by the layout manager)

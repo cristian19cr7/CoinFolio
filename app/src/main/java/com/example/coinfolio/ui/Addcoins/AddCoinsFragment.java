@@ -1,6 +1,7 @@
 package com.example.coinfolio.ui.Addcoins;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -37,13 +38,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class AddCoinsFragment extends Fragment {
+public class AddCoinsFragment extends Fragment implements AddCoinAdapter.ViewHolder.AssetSelectedListener {
     private List<Coin> list = new ArrayList<>();
-    private AddCoinAdapter addCoinAdapter = new AddCoinAdapter(list);
+    private AddCoinAdapter addCoinAdapter = new AddCoinAdapter(list, this);
         public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
             final View view = inflater.inflate(R.layout.fragment_add_coins, container, false);
@@ -128,6 +130,7 @@ public class AddCoinsFragment extends Fragment {
                                 tempCoin.coin_ID = temp.getString("id");
                                 tempCoin.imageURL = temp.getString("image");
                                 tempCoin.market_cap_rank = temp.getInt("market_cap_rank");
+                                tempCoin.symbol = temp.getString("symbol");
                                 list.add(tempCoin);
                             }
                             Toast.makeText(getContext(),"lkidfshg;lkasidfhgd",Toast.LENGTH_SHORT).show();
@@ -153,4 +156,12 @@ public class AddCoinsFragment extends Fragment {
         addCoinAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void OnAssetSelected(int position)
+    {
+        //Toast.makeText(getContext(),list.get(position).name, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getContext(), AddAssetInfo.class);
+        intent.putExtra("asset", list.get(position));
+        startActivity(intent);
+    }
 }

@@ -38,11 +38,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class HomeFragment extends Fragment {
-
+private double btcAmount = 0.2591234;
 private float[] btcdata;
+private List<Float> dataPrices = new ArrayList<>();
 private TextView textView;
 private ImageView imageView;
 private EditText editText;
@@ -104,6 +107,7 @@ private SparkView sparkView;
         if(error != null)
             Toast.makeText(getContext(),"error with the volley chart data", Toast.LENGTH_SHORT).show();
         else{
+            //portfolio();
             sparkView.setAdapter(new SparkAdapter(btcdata));
             sparkView.setScrubEnabled(true);
             sparkView.setScrubListener(new SparkView.OnScrubListener() {
@@ -157,5 +161,11 @@ private SparkView sparkView;
 
         // Add the request to the RequestQueue.
         q.add(stringRequest);
+    }
+    public void portfolio()
+    {
+        for (int i = 0; i < btcdata.length; i++) {
+            btcdata[i] = (float) (btcdata[i] * btcAmount);
+        }
     }
 }
