@@ -51,38 +51,59 @@
         android:id="@+id/AssetInvestmentInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="76dp"
         android:ems="10"
         android:hint="Enter Dollar Amount"
         android:inputType="number"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/AssetAmountInput"
         app:layout_constraintHorizontal_bias="0.919"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/AssetAmountInput"
-        app:layout_constraintVertical_bias="0.132" />
+        app:layout_constraintStart_toStartOf="@+id/AssetAmountInput"
+        app:layout_constraintTop_toBottomOf="@+id/AssetAmountInput" />
+
+    <EditText
+        android:id="@+id/AssetFeesInput"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="76dp"
+        android:ems="10"
+        android:hint="Enter Dollar Amount"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="@+id/AssetInvestmentInput"
+        app:layout_constraintStart_toStartOf="@+id/AssetInvestmentInput"
+        app:layout_constraintTop_toBottomOf="@+id/AssetInvestmentInput" />
 
     <TextView
         android:id="@+id/AssetInvestmentTV"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
+        android:layout_marginTop="92dp"
         android:text="Investment: "
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/editText2"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/AssetAmountTV"
-        app:layout_constraintVertical_bias="0.15" />
+        app:layout_constraintEnd_toEndOf="@+id/AssetAmountTV"
+        app:layout_constraintHorizontal_bias="0.19"
+        app:layout_constraintStart_toStartOf="@+id/AssetAmountTV"
+        app:layout_constraintTop_toBottomOf="@+id/AssetAmountTV" />
+
+    <TextView
+        android:id="@+id/AssetFeesTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="92dp"
+        android:text="Fees (optional): "
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/AssetInvestmentTV"
+        app:layout_constraintHorizontal_bias="0.146"
+        app:layout_constraintStart_toStartOf="@+id/AssetInvestmentTV"
+        app:layout_constraintTop_toBottomOf="@+id/AssetInvestmentTV" />
 
     <Button
         android:id="@+id/AssetAddBtn"
         android:layout_width="328dp"
         android:layout_height="58dp"
         android:layout_marginTop="612dp"
-        android:text="Button"
+        android:text="Add Coin To Portfolio"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.493"

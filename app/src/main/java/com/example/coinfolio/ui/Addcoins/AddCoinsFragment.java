@@ -133,7 +133,7 @@ public class AddCoinsFragment extends Fragment implements AddCoinAdapter.ViewHol
                                 tempCoin.symbol = temp.getString("symbol");
                                 list.add(tempCoin);
                             }
-                            Toast.makeText(getContext(),"lkidfshg;lkasidfhgd",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(),"Loading Currencies",Toast.LENGTH_SHORT).show();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
