@@ -17,6 +17,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
+
 public class AddAssetInfo extends AppCompatActivity {
 
     @Override
@@ -25,19 +27,29 @@ public class AddAssetInfo extends AppCompatActivity {
         setContentView(R.layout.activity_add_asset_info);
         final Coin asset = (Coin) getIntent().getSerializableExtra("asset");
         TextView textView = findViewById(R.id.AssetAmountTV);
-        EditText assetAmountInput = findViewById(R.id.AssetAmountInput);
-        EditText assetInvestInput = findViewById(R.id.AssetInvestmentInput);
+        final EditText assetAmountInput = findViewById(R.id.AssetAmountInput);
+        final EditText assetInvestInput = findViewById(R.id.AssetInvestmentInput);
         ImageView assetLogo = findViewById(R.id.AssetLogo);
         Button AssetAddBtn = findViewById(R.id.AssetAddBtn);
         textView.setText(asset.symbol.toUpperCase());
         Picasso.get().load(asset.imageURL).into(assetLogo);
 
+
         AssetAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Test", Toast.LENGTH_SHORT).show();
+                transaction newTransaction = new transaction();
+                if(assetAmountInput.getText() != null || assetInvestInput.getText()!=null)
+                {
+                    newTransaction.assetAmount = Double.parseDouble(assetAmountInput.getText().toString());
+                    newTransaction.investmentAmount = Double.parseDouble(assetInvestInput.getText().toString());
+                    newTransaction.assetName = asset.name;
+                    newTransaction.assetID = asset.coin_ID;
+                    newTransaction.setBoughtPrice(newTransaction.investmentAmount/newTransaction.assetAmount);
+                }
                 FirebaseDatabase database = FirebaseDatabase.getInstance("https://coinfolio-87968-default-rtdb.firebaseio.com/");
-                Task<Void> myRef = database.getReference().child("transaction").push().setValue(asset);
+                Task<Void> myRef = database.getReference().child("transaction").child(asset.name).push().setValue(newTransaction);
+                finish();
             }
         });
 

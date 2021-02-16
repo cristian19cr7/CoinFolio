@@ -1,22 +1,13 @@
 package com.example.coinfolio.ui.Addcoins;
 
-import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,23 +16,18 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.coinfolio.AddCoinAdapter;
 import com.example.coinfolio.Coin;
 import com.example.coinfolio.R;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class AddCoinsFragment extends Fragment implements AddCoinAdapter.ViewHolder.AssetSelectedListener {
     private List<Coin> list = new ArrayList<>();
@@ -68,12 +54,13 @@ public class AddCoinsFragment extends Fragment implements AddCoinAdapter.ViewHol
 //            });
 //            textView.setAdapter(adapter);
             getListOfCoins();
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                public void run() {
-                    RV(view);
-                }
-            }, 2000);
+            RV(view);
+//            Handler handler = new Handler();
+////            handler.postDelayed(new Runnable() {
+////                public void run() {
+////                    RV(view);
+////                }
+////            }, 2000);
 
             return view;
     }
@@ -133,7 +120,7 @@ public class AddCoinsFragment extends Fragment implements AddCoinAdapter.ViewHol
                                 tempCoin.symbol = temp.getString("symbol");
                                 list.add(tempCoin);
                             }
-                            Toast.makeText(getContext(),"lkidfshg;lkasidfhgd",Toast.LENGTH_SHORT).show();
+                            addCoinAdapter.notifyDataSetChanged();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -146,7 +133,6 @@ public class AddCoinsFragment extends Fragment implements AddCoinAdapter.ViewHol
             }
         });
         queue.add(stringRequest);
-        addCoinAdapter.notifyDataSetChanged();
     }
     
     public void RV(View v){
@@ -159,9 +145,9 @@ public class AddCoinsFragment extends Fragment implements AddCoinAdapter.ViewHol
     @Override
     public void OnAssetSelected(int position)
     {
-        //Toast.makeText(getContext(),list.get(position).name, Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getContext(), AddAssetInfo.class);
         intent.putExtra("asset", list.get(position));
         startActivity(intent);
+
     }
 }

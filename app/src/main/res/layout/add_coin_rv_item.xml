@@ -3,27 +3,32 @@
     android:layout_width="match_parent"
     android:layout_height="100dp"
     android:layout_marginLeft="30dp"
-    android:layout_marginRight="30dp">
+    android:layout_marginRight="30dp"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/corners"
+    android:elevation="5dp">
 
     <TextView
         android:id="@+id/item_rank_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="7dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="40dp"
         android:text="100" />
+
     <ImageView
         android:id="@+id/coinImg"
         android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_height="88dp"
         android:layout_marginLeft="35dp"
-        android:src="@mipmap/ic_launcher"
-        android:contentDescription="TODO" />
+        android:contentDescription="TODO"
+        android:src="@mipmap/ic_launcher" />
 
     <TextView
         android:id="@+id/item_tv"
         android:layout_width="204dp"
         android:layout_height="50dp"
+        android:layout_marginTop="20dp"
         android:layout_marginLeft="140dp"
         android:text="" />
 
