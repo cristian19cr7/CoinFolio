@@ -141,7 +141,7 @@ public class AddCoinsFragment extends Fragment implements AddCoinAdapter.ViewHol
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getContext(),"error getting the coin lists",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(),"Error getting the coin lists",Toast.LENGTH_SHORT).show();
 
             }
         });

@@ -3,4 +3,16 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="EnterCoin">Enter Coin</string>
+    <string name="EnterCoinAmount">Enter Coin Amount</string>
+    <string name="EnterDollarAmount">Enter Dollar Amount</string>
+    <string name="Search">Search</string>
+    <string name="HomePage">Home Page</string>
+    <string name="PickCoin">Pick The Coin</string>
+    <string name="Amount">Amount: </string>
+    <string name="Investment">Investment: </string>
+    <string name="FeesOptional">Fees (optional): </string>
+    <string name="AddCoinToPortfolio">Add Coin To Portfolio</string>
+    <string name="RemoveCoinsHere">Remove Coins Here</string>
+    <string name="CoinImage">Coin Image</string>
 </resources>
