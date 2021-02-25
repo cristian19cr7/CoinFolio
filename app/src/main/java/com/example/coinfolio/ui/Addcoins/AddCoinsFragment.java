@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -46,70 +47,16 @@ import java.util.Objects;
 public class AddCoinsFragment extends Fragment implements AddCoinAdapter.ViewHolder.AssetSelectedListener {
     private List<Coin> list = new ArrayList<>();
     private AddCoinAdapter addCoinAdapter = new AddCoinAdapter(list, this);
+    private ProgressBar progressBar;
         public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
             final View view = inflater.inflate(R.layout.fragment_add_coins, container, false);
-            // Write a message to the database
-//            FirebaseDatabase database = FirebaseDatabase.getInstance(getString(R.string.Firebase_Key_API));
-//            DatabaseReference myRef = database.getReference("message");
-//
-//            myRef.setValue("Hello world!");
-//            String[] CoinList = getCoinsList();
-//            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.dropdown_item,R.id.autoComplete_dropdown, CoinList);
-//            final AutoCompleteTextView textView = view.findViewById(R.id.autoCompleteTextView);
-//
-//            textView.setOnItemClickListener( new AdapterView.OnItemClickListener()
-//            {
-//                @Override
-//                public void onItemClick(AdapterView<?> adapterView , View view , int position ,long arg3)
-//                {
-//                    Toast.makeText(getContext(), "list clicked " + position, Toast.LENGTH_SHORT).show();
-//                }
-//            });
-//            textView.setAdapter(adapter);
-            getListOfCoins();
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                public void run() {
-                    RV(view);
-                }
-            }, 2000);
 
+            progressBar = view.findViewById(R.id.progressbar);
+            getListOfCoins();
+            RV(view);
             return view;
     }
-
-//    public String[] getCoinsList()
-//    {
-//        final String[] coins = new String[6174];
-//        String URL = "https://api.coingecko.com/api/v3/coins/list";
-//        RequestQueue queue = Volley.newRequestQueue(getContext());
-//        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        // Display the first 500 characters of the response string.
-//                        try {
-//                            JSONArray array = new JSONArray(response);
-//                            for (int i = 0; i < coins.length; i++) {
-//                                JSONObject temp = array.getJSONObject(i);
-//                                coins[i] = temp.getString("name");
-//                            }
-//                            Toast.makeText(getContext(),"done getting the list", Toast.LENGTH_SHORT).show();
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Toast.makeText(getContext(),"error getting the coin lists",Toast.LENGTH_SHORT).show();
-//
-//            }
-//        });
-//        queue.add(stringRequest);
-//        return coins;
-//    }
 
 
     public void getListOfCoins()
@@ -133,6 +80,8 @@ public class AddCoinsFragment extends Fragment implements AddCoinAdapter.ViewHol
                                 tempCoin.symbol = temp.getString("symbol");
                                 list.add(tempCoin);
                             }
+                            addCoinAdapter.notifyDataSetChanged();
+                            progressBar.setVisibility(View.INVISIBLE);
                             Toast.makeText(getContext(),"Loading Currencies",Toast.LENGTH_SHORT).show();
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -146,7 +95,6 @@ public class AddCoinsFragment extends Fragment implements AddCoinAdapter.ViewHol
             }
         });
         queue.add(stringRequest);
-        addCoinAdapter.notifyDataSetChanged();
     }
     
     public void RV(View v){
