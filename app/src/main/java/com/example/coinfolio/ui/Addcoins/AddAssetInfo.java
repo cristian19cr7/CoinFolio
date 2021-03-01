@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.example.coinfolio.Coin;
 import com.example.coinfolio.R;
+import com.example.coinfolio.User;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -24,6 +25,7 @@ public class AddAssetInfo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_asset_info);
         final Coin asset = (Coin) getIntent().getSerializableExtra("asset");
+        User mUser = User.getInstance();
         TextView textView = findViewById(R.id.AssetAmountTV);
         EditText assetAmountInput = findViewById(R.id.AssetAmountInput);
         EditText assetInvestInput = findViewById(R.id.AssetInvestmentInput);
