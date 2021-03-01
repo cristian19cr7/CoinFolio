@@ -20,4 +20,8 @@ public class User {
         // using the connection
         uuid = request;
     }
+
+    public String getUuid() {
+        return uuid;
+    }
 }
