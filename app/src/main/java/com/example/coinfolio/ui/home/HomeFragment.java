@@ -1,6 +1,7 @@
 package com.example.coinfolio.ui.home;
 
 import android.app.DownloadManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,8 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +35,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.robinhood.spark.SparkView;
 import com.robinhood.spark.animation.LineSparkAnimator;
 import com.robinhood.spark.animation.MorphSparkAnimator;
+import com.robinhood.ticker.TickerUtils;
+import com.robinhood.ticker.TickerView;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -46,26 +51,31 @@ public class HomeFragment extends Fragment {
 private double btcAmount = 0.2591234;
 private float[] btcdata;
 private List<Float> dataPrices = new ArrayList<>();
-private TextView textView;
+private TickerView textView;
 private ImageView imageView;
 private EditText editText;
 private SparkView sparkView;
+private RadioGroup group;
+private RadioButton radioButton;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_home,container,false);
+        final View view = inflater.inflate(R.layout.fragment_home,container,false);
         textView = view.findViewById(R.id.text_home);
         imageView = view.findViewById(R.id.coinImg);
         editText = view.findViewById(R.id.coinInput);
         sparkView = view.findViewById(R.id.sparkview);
+        group = view.findViewById(R.id.radioGroup);
         Button btn = view.findViewById(R.id.coinBTN);
         final RequestQueue queue = Volley.newRequestQueue(getContext());
+        final String timeframeData = "1";
         final String url = "https://api.coingecko.com/api/v3/coins/";
-        final String urlContinue = "/market_chart?vs_currency=usd&days=1";
-
+        final String urlContinue = "/market_chart?vs_currency=usd&days=";
+        textView.setCharacterLists(TickerUtils.provideNumberList());
+        textView.setAnimationDuration(400);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSparkData(queue, url+editText.getText().toString().toLowerCase()+urlContinue);
+                getSparkData(queue, url+editText.getText().toString().toLowerCase()+urlContinue,"1");
 //                final RequestQueue queue = Volley.newRequestQueue(getContext());
 //                final String URL = "https://api.coingecko.com/api/v3/coins/" + editText.getText().toString().toLowerCase();
 //                StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
@@ -97,6 +107,32 @@ private SparkView sparkView;
             }
         });
 
+        group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                int selectedId = group.getCheckedRadioButtonId();
+                radioButton = view.findViewById(selectedId);
+                String temp = radioButton.getText().toString();
+                if(temp.equals("week"))
+                {
+                    getSparkData(queue, url+editText.getText().toString().toLowerCase()+urlContinue,"7");
+                    Toast.makeText(getContext(),radioButton.getText(),Toast.LENGTH_SHORT).show();
+                }
+                else if(temp.equals("month"))
+                {
+                    getSparkData(queue, url+editText.getText().toString().toLowerCase()+urlContinue,"30");
+                    Toast.makeText(getContext(),radioButton.getText(),Toast.LENGTH_SHORT).show();
+                }
+                else if(temp.equals("day"))
+                {
+                    getSparkData(queue, url+editText.getText().toString().toLowerCase()+urlContinue,"1");
+                    Toast.makeText(getContext(),radioButton.getText(),Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+
         //getSparkData(queue,url);
 
         return view;
@@ -115,9 +151,9 @@ private SparkView sparkView;
                 public void onScrubbed(Object value) {
                     if (value == null) {
                         int lastIndex = btcdata.length-1;
-                        textView.setText(String.format("$%.2f",btcdata[lastIndex]));
+                        textView.setText(String.format("$%.2f",btcdata[lastIndex]),true);
                     } else {
-                        textView.setText("$" + value.toString());
+                        textView.setText(String.format("$%.2f",value),true);
                     }
                 }
             });
@@ -128,8 +164,9 @@ private SparkView sparkView;
         }
 
     }
-    public void getSparkData(RequestQueue q, String APIurl)
+    public void getSparkData(RequestQueue q, String APIurl, String timeframe)
     {
+        APIurl = APIurl + timeframe;
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, APIurl,
                 new Response.Listener<String>() {

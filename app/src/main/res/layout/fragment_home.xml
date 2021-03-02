@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <com.robinhood.ticker.TickerView
         android:id="@+id/text_home"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.073" />
+        app:layout_constraintVertical_bias="0.15" />
 
     <Button
         android:id="@+id/coinBTN"
@@ -63,4 +63,35 @@
         app:layout_constraintStart_toEndOf="@+id/coinInput"
         app:layout_constraintTop_toBottomOf="@+id/text_home"
         app:layout_constraintVertical_bias="0.784" />
+
+    <RadioGroup
+        android:layout_width="355dp"
+        android:layout_height="43dp"
+        android:orientation="horizontal"
+        android:id="@+id/radioGroup"
+        app:layout_constraintBottom_toTopOf="@+id/coinInput"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sparkview"
+        app:layout_constraintVertical_bias="0.145" >
+
+        <RadioButton
+            android:id="@+id/radioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="day" />
+
+        <RadioButton
+            android:id="@+id/radioButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="week" />
+
+        <RadioButton
+            android:id="@+id/radioButton3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="month" />
+    </RadioGroup>
 </androidx.constraintlayout.widget.ConstraintLayout>
