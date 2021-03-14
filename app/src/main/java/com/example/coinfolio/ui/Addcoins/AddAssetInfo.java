@@ -1,9 +1,11 @@
 package com.example.coinfolio.ui.Addcoins;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,19 +17,24 @@ import com.example.coinfolio.AddingCoinsComplete;
 import com.example.coinfolio.Coin;
 import com.example.coinfolio.R;
 import com.example.coinfolio.User;
+import com.example.coinfolio.transaction;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-public class AddAssetInfo extends AppCompatActivity {
+import java.util.HashMap;
 
+public class AddAssetInfo extends AppCompatActivity {
+    User mUser = User.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_asset_info);
         final Coin asset = (Coin) getIntent().getSerializableExtra("asset");
-        final User mUser = User.getInstance();
         TextView textView = findViewById(R.id.AssetAmountTV);
         final EditText assetAmountInput = findViewById(R.id.AssetAmountInput);
         final EditText assetInvestInput = findViewById(R.id.AssetInvestmentInput);
@@ -48,7 +55,8 @@ public class AddAssetInfo extends AppCompatActivity {
                     newTransaction.assetID = asset.coin_ID;
                     newTransaction.setBoughtPrice(newTransaction.investmentAmount/newTransaction.assetAmount);
                     FirebaseDatabase database = FirebaseDatabase.getInstance("https://coinfolio-87968-default-rtdb.firebaseio.com/");
-                    Task<Void> myRef = database.getReference().child(mUser.getUuid()).child("transaction").child(asset.name).push().setValue(newTransaction);
+                    Task<Void> myRef = database.getReference().child(mUser.getUuid()).child("transaction").push().setValue(newTransaction);
+                    updatePortfolio(newTransaction);
                     Intent intent = new Intent(getApplicationContext(), AddingCoinsComplete.class);
                     startActivity(intent);
                     finish();
@@ -61,6 +69,38 @@ public class AddAssetInfo extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void updatePortfolio(final transaction newTransaction) {
+        FirebaseDatabase start = FirebaseDatabase.getInstance();
+        final DatabaseReference myRef = start.getReference().child(mUser.getUuid()).child("Portfolio");
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                HashMap<String, Double> data = (HashMap<String, Double>)snapshot.getValue();
+                if(data.containsKey(newTransaction.getAssetName()))
+                {
+                    Double new_amount = data.get(newTransaction.getAssetName()) + newTransaction.getAssetAmount();
+                    Double new_investment = data.get("investment")+ newTransaction.getInvestmentAmount();
+                    data.put(newTransaction.getAssetName(), new_amount);
+                    data.put("investment", new_investment);
+                }
+                else
+                {
+                    Double new_investment = data.get("investment")+ newTransaction.getInvestmentAmount();
+                    data.put(newTransaction.getAssetName(), newTransaction.getAssetAmount());
+                    data.put("investment", new_investment);
+
+                }
+                myRef.setValue(data);
+                Log.d("hash", "portfolio is done loading in");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
 }

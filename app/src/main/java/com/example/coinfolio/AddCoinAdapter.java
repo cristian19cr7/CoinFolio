@@ -1,5 +1,6 @@
 package com.example.coinfolio;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +25,7 @@ public class AddCoinAdapter extends RecyclerView.Adapter<AddCoinAdapter.ViewHold
      * (custom ViewHolder).
      */
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private final TextView textView, coin_rank;
+        private final TextView textView, coin_rank, price, pricePercent;
         private final ImageView imageView;
         private AssetSelectedListener assetListener;
         public ViewHolder(View view, AssetSelectedListener listener) {
@@ -34,6 +35,8 @@ public class AddCoinAdapter extends RecyclerView.Adapter<AddCoinAdapter.ViewHold
             textView = view.findViewById(R.id.item_tv);
             imageView = view.findViewById(R.id.coinImg);
             coin_rank = view.findViewById(R.id.item_rank_tv);
+            price = view.findViewById(R.id.item_price);
+            pricePercent = view.findViewById(R.id.item_price_percentage);
             this.assetListener = listener;
             view.setOnClickListener(this);
         }
@@ -44,6 +47,12 @@ public class AddCoinAdapter extends RecyclerView.Adapter<AddCoinAdapter.ViewHold
         public TextView getCoin_rank()
         {
             return coin_rank;
+        }
+        public TextView getprice() {
+            return price;
+        }
+        public TextView getpricePercent() {
+            return pricePercent;
         }
 
         @Override
@@ -89,6 +98,22 @@ public class AddCoinAdapter extends RecyclerView.Adapter<AddCoinAdapter.ViewHold
         viewHolder.getCoin_rank().setText(String.valueOf(localDataSet.get(position).market_cap_rank));
         viewHolder.getTextView().setText(localDataSet.get(position).name);
         Picasso.get().load(localDataSet.get(position).imageURL).into(viewHolder.imageView);
+        if(localDataSet.get(position).current_price < 1.0)
+            viewHolder.getprice().setText(String.format("$%.5f", localDataSet.get(position).current_price));
+        else
+            viewHolder.getprice().setText(String.format("$%.2f", localDataSet.get(position).current_price));
+        if(localDataSet.get(position).price_change_percentage_24h < 0.0)
+        {
+            viewHolder.getpricePercent().setText(String.format("%.2f", localDataSet.get(position).price_change_percentage_24h)+ "%");
+            viewHolder.getpricePercent().setTextColor(Color.RED);
+        }
+        else
+        {
+            viewHolder.getpricePercent().setText(String.format("%+.2f", localDataSet.get(position).price_change_percentage_24h)+"%");
+            viewHolder.getpricePercent().setTextColor(Color.GREEN);
+        }
+
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)

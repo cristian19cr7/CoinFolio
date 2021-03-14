@@ -1,29 +1,33 @@
-package com.example.coinfolio.ui.Addcoins;
+package com.example.coinfolio;
 
 import java.io.Serializable;
 
 public class transaction implements Serializable {
-    double assetAmount;
-    double investmentAmount;
-    String assetName;
-    String assetID;
-    double boughtPrice;
-    public transaction(double amount, double investment, String name, String id)
+    public Double assetAmount;
+    public Double investmentAmount;
+    public String assetName;
+    public String assetID;
+    public Double boughtPrice;
+
+
+    public transaction(Double amount, Double investment, String name, String id)
     {
         assetAmount = amount;
         investmentAmount = investment;
         assetName = name;
         assetID = id;
+        boughtPrice = investment/amount;
     }
-    transaction()
+    public transaction()
     {
         assetAmount = 0.0;
         investmentAmount = 0.0;
         assetName = "";
         assetID = "";
+        boughtPrice = 0.00;
     }
 
-    public double getAssetAmount() {
+    public Double getAssetAmount() {
         return assetAmount;
     }
 
@@ -31,7 +35,7 @@ public class transaction implements Serializable {
         this.assetAmount = assetAmount;
     }
 
-    public double getInvestmentAmount() {
+    public Double getInvestmentAmount() {
         return investmentAmount;
     }
 
@@ -55,7 +59,7 @@ public class transaction implements Serializable {
         this.assetID = assetID;
     }
 
-    public double getBoughtPrice() {
+    public Double getBoughtPrice() {
         return boughtPrice;
     }
 

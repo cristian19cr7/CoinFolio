@@ -10,22 +10,49 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="7dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="40dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:textSize="15dp"
         android:text="100" />
+
     <ImageView
         android:id="@+id/coinImg"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="25dp"
         android:layout_marginLeft="35dp"
         android:src="@mipmap/ic_launcher"
         android:contentDescription="TODO" />
 
     <TextView
         android:id="@+id/item_tv"
-        android:layout_width="204dp"
-        android:layout_height="50dp"
-        android:layout_marginLeft="140dp"
-        android:text="" />
+        android:layout_width="89dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="40dp"
+        android:textSize="17dp"
+        android:textColor="#000000"
+        android:text="Bticoin" />
+
+    <TextView
+        android:id="@+id/item_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="40dp"
+        android:text="$100,000.00"
+        android:textColor="#000000"
+        android:textSize="17dp" />
+
+    <TextView
+        android:id="@+id/item_price_percentage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="65dp"
+        android:textStyle="bold"
+        android:text="1000.00%" />
 
 
 </FrameLayout>

@@ -1,26 +1,19 @@
 package com.example.coinfolio.ui.home;
 
-import android.app.DownloadManager;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.DragAndDropPermissions;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -30,38 +23,42 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.coinfolio.R;
 import com.example.coinfolio.SparkAdapter;
+import com.example.coinfolio.User;
+import com.example.coinfolio.transaction;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.robinhood.spark.SparkView;
-import com.robinhood.spark.animation.LineSparkAnimator;
-import com.robinhood.spark.animation.MorphSparkAnimator;
 import com.robinhood.ticker.TickerUtils;
 import com.robinhood.ticker.TickerView;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 public class HomeFragment extends Fragment {
-private double btcAmount = 0.2591234;
-private float[] btcdata;
-private List<Float> dataPrices = new ArrayList<>();
-private TickerView textView;
-private ImageView imageView;
-private EditText editText;
-private SparkView sparkView;
-private RadioGroup group;
-private RadioButton radioButton;
+    private User currentUser = User.getInstance();
+    private String uID = currentUser.getUuid();
+    private double btcAmount = 0.2591234;
+    private float[] btcdata;
+    private List<Float> dataPrices = new ArrayList<>();
+    private TickerView textView;
+    private EditText editText;
+    private SparkView sparkView;
+    private RadioGroup group;
+    private RadioButton radioButton;
+    private List<transaction> portfolio = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_home,container,false);
         textView = view.findViewById(R.id.text_home);
-        imageView = view.findViewById(R.id.coinImg);
         editText = view.findViewById(R.id.coinInput);
         sparkView = view.findViewById(R.id.sparkview);
         group = view.findViewById(R.id.radioGroup);
@@ -131,9 +128,28 @@ private RadioButton radioButton;
             }
         });
 
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference ref = database.getReference("/"+uID+"/transaction/");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot postSnapshot : dataSnapshot.getChildren())
+                {
+                    transaction post = new transaction(Double.parseDouble(postSnapshot.child("assetAmount").getValue().toString())
+                            ,Double.parseDouble(postSnapshot.child("investmentAmount").getValue().toString())
+                            ,postSnapshot.child("assetName").getValue().toString()
+                            ,postSnapshot.child("assetID").getValue().toString());
+                    portfolio.add(post);
+                    Log.d("asset", post.getAssetName());
+                }
+                Log.d("done", "portfolio is done loading in");
+            }
 
-
-        //getSparkData(queue,url);
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
 
         return view;
     }
@@ -204,5 +220,53 @@ private RadioButton radioButton;
         for (int i = 0; i < btcdata.length; i++) {
             btcdata[i] = (float) (btcdata[i] * btcAmount);
         }
+    }
+
+//    public void ParseTransactions(List<transaction> transactionList, HashMap<String, Double> asset_portfolio)
+//    {
+//        for (int i = 0; i < transactionList.size(); i++)
+//        {
+//            if(asset_portfolio.containsKey(transactionList.get(i).getAssetName()))
+//            {
+//                Double current_amount;
+//                current_amount = asset_portfolio.get(transactionList.get(i).getAssetName());
+//                current_amount += transactionList.get(i).getAssetAmount();
+//                asset_portfolio.put(transactionList.get(i).getAssetName(), current_amount);
+//            }
+//            else
+//            {
+//                asset_portfolio.put(transactionList.get(i).getAssetName(), transactionList.get(i).getAssetAmount());
+//            }
+//        }
+//    }
+//    public HashMap<String, Double> getPortfolio()
+//    {
+//        HashMap<String, Double> coin_portfolio = new HashMap<>();
+//        FirebaseDatabase start = FirebaseDatabase.getInstance();
+//        DatabaseReference myRef = start.getReference().child(currentUser.getUuid()).child("Portfolio");
+//
+//    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        FirebaseDatabase start = FirebaseDatabase.getInstance();
+        final DatabaseReference myRef = start.getReference().child(currentUser.getUuid()).child("Portfolio");
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.getValue() == null)
+                {
+                    myRef.child("investment").setValue(0.0001);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

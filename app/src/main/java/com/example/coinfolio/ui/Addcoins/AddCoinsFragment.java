@@ -78,6 +78,8 @@ public class AddCoinsFragment extends Fragment implements AddCoinAdapter.ViewHol
                                 tempCoin.imageURL = temp.getString("image");
                                 tempCoin.market_cap_rank = temp.getInt("market_cap_rank");
                                 tempCoin.symbol = temp.getString("symbol");
+                                tempCoin.current_price = temp.getDouble("current_price");
+                                tempCoin.price_change_percentage_24h = temp.getDouble("price_change_percentage_24h");
                                 list.add(tempCoin);
                             }
                             addCoinAdapter.notifyDataSetChanged();
