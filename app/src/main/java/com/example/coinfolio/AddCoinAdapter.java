@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,11 +15,45 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-public class AddCoinAdapter extends RecyclerView.Adapter<AddCoinAdapter.ViewHolder> {
+public class AddCoinAdapter extends RecyclerView.Adapter<AddCoinAdapter.ViewHolder> implements Filterable {
     private List<Coin> localDataSet;
+    private List<Coin> localDataSetFull;
     private ViewHolder.AssetSelectedListener assetSelectedListener;
+
+    @Override
+    public Filter getFilter() {
+        return FilterCoins;
+    }
+    private Filter FilterCoins = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            String searchText= charSequence.toString().toLowerCase();
+            List<Coin>templist = new ArrayList<>();
+            if(searchText.length() == 0 || searchText.isEmpty())
+            {
+                templist.addAll(localDataSetFull);
+            }else{
+                for(Coin item:localDataSetFull){
+                    if(item.coin_ID.toLowerCase().contains(searchText)){
+                        templist.add(item);
+                    }
+                }
+            }
+            FilterResults filterResults = new FilterResults();
+            filterResults.values = templist;
+            return filterResults;
+        }
+
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            localDataSet.clear();
+            localDataSet.addAll((Collection<? extends Coin>) filterResults.values);
+            notifyDataSetChanged();
+        }
+    };
     //private List<Coin> localDataSetSearch;
 
     /**
@@ -74,6 +110,7 @@ public class AddCoinAdapter extends RecyclerView.Adapter<AddCoinAdapter.ViewHold
      */
     public AddCoinAdapter(List<Coin> dataSet, ViewHolder.AssetSelectedListener Listener) {
         localDataSet = dataSet;
+        localDataSetFull = new ArrayList<>(localDataSet);
         assetSelectedListener = Listener;
         //localDataSetSearch = new ArrayList<>(dataSet);
     }
@@ -121,4 +158,6 @@ public class AddCoinAdapter extends RecyclerView.Adapter<AddCoinAdapter.ViewHold
     public int getItemCount() {
         return localDataSet.size();
     }
+
+
 }
