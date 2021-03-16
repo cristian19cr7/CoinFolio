@@ -56,6 +56,7 @@ public class AddCoinsFragment extends Fragment implements AddCoinAdapter.ViewHol
         public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
             final View view = inflater.inflate(R.layout.fragment_add_coins, container, false);
+            setHasOptionsMenu(true);
             progressBar = view.findViewById(R.id.progressbar);
             getListOfCoins();
             RV(view);
@@ -65,7 +66,7 @@ public class AddCoinsFragment extends Fragment implements AddCoinAdapter.ViewHol
 
     public void getListOfCoins()
     {
-        String URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=true";
+        String URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false";
         RequestQueue queue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
                 new Response.Listener<String>() {
@@ -133,7 +134,7 @@ public class AddCoinsFragment extends Fragment implements AddCoinAdapter.ViewHol
 
             @Override
             public boolean onQueryTextChange(String s) {
-
+                addCoinAdapter.getFilter().filter(s);
                 return false;
             }
         });

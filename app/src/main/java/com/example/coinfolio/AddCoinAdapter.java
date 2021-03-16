@@ -16,6 +16,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class AddCoinAdapter extends RecyclerView.Adapter<AddCoinAdapter.ViewHolder> implements Filterable {
@@ -30,6 +31,10 @@ public class AddCoinAdapter extends RecyclerView.Adapter<AddCoinAdapter.ViewHold
     private Filter FilterCoins = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence charSequence) {
+            if(localDataSet.size()== 250)
+            {
+                localDataSetFull = new ArrayList<>(localDataSet);
+            }
             String searchText= charSequence.toString().toLowerCase();
             List<Coin>templist = new ArrayList<>();
             if(searchText.length() == 0 || searchText.isEmpty())
@@ -37,7 +42,7 @@ public class AddCoinAdapter extends RecyclerView.Adapter<AddCoinAdapter.ViewHold
                 templist.addAll(localDataSetFull);
             }else{
                 for(Coin item:localDataSetFull){
-                    if(item.coin_ID.toLowerCase().contains(searchText)){
+                    if(item.name.toLowerCase().contains(searchText)){
                         templist.add(item);
                     }
                 }
@@ -46,7 +51,11 @@ public class AddCoinAdapter extends RecyclerView.Adapter<AddCoinAdapter.ViewHold
             filterResults.values = templist;
             return filterResults;
         }
-
+//
+//        public List<Coin> getLocalDataSetFull() {
+//            Collections.copy(localDataSet,localDataSetFull);
+//            return localDataSetFull;
+//        }
         @Override
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
             localDataSet.clear();
@@ -110,7 +119,6 @@ public class AddCoinAdapter extends RecyclerView.Adapter<AddCoinAdapter.ViewHold
      */
     public AddCoinAdapter(List<Coin> dataSet, ViewHolder.AssetSelectedListener Listener) {
         localDataSet = dataSet;
-        localDataSetFull = new ArrayList<>(localDataSet);
         assetSelectedListener = Listener;
         //localDataSetSearch = new ArrayList<>(dataSet);
     }
