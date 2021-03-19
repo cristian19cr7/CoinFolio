@@ -21,7 +21,7 @@
             android:name=".AddingCoinsComplete"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_adding_coins_complete"
-            android:theme="@style/FullscreenTheme"></activity>
+            android:theme="@style/Theme.AppCompat"></activity>
         <activity android:name=".MainActivity" />
         <activity android:name=".ui.Addcoins.AddAssetInfo" />
         <activity

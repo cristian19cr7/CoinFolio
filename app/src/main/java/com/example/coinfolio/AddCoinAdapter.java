@@ -21,7 +21,7 @@ import java.util.List;
 
 public class AddCoinAdapter extends RecyclerView.Adapter<AddCoinAdapter.ViewHolder> implements Filterable {
     private List<Coin> localDataSet;
-    private List<Coin> localDataSetFull;
+    static private List<Coin> localDataSetFull;
     private ViewHolder.AssetSelectedListener assetSelectedListener;
 
     @Override
@@ -59,8 +59,12 @@ public class AddCoinAdapter extends RecyclerView.Adapter<AddCoinAdapter.ViewHold
         @Override
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
             localDataSet.clear();
-            localDataSet.addAll((Collection<? extends Coin>) filterResults.values);
-            notifyDataSetChanged();
+            if(filterResults.values != null)
+            {
+                localDataSet.addAll((Collection<? extends Coin>) filterResults.values);
+                notifyDataSetChanged();
+            }
+
         }
     };
     //private List<Coin> localDataSetSearch;
