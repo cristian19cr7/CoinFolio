@@ -15,6 +15,10 @@
     <string name="AddCoinToPortfolio">Add Coin To Portfolio</string>
     <string name="RemoveCoinsHere">Remove Coins Here</string>
     <string name="CoinImage">Coin Image</string>
+    <string name="Day">Day</string>
+    <string name="Week">Week</string>
+    <string name="Month">Month</string>
+    <string name="SignOut">Sign Out</string>
 
     <string name="title_activity_adding_coins_complete">AddingCoinsComplete</string>
     <string name="dummy_button">Dummy Button</string>

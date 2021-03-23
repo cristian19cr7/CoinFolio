@@ -93,7 +93,7 @@ public class Login extends AppCompatActivity {
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 // ...
-                Toast.makeText(getApplicationContext(),"asdfsa " +e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"Failed to login " +e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
     }
