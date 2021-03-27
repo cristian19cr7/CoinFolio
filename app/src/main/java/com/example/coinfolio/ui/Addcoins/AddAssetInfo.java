@@ -26,6 +26,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 
 public class AddAssetInfo extends AppCompatActivity {
@@ -78,17 +80,18 @@ public class AddAssetInfo extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 HashMap<String, Double> data = (HashMap<String, Double>)snapshot.getValue();
-                if(data.containsKey(newTransaction.getAssetName()))
+                if(data.containsKey(newTransaction.getAssetID()))
                 {
-                    Double new_amount = data.get(newTransaction.getAssetName()) + newTransaction.getAssetAmount();
+                    Double new_amount = BigDecimal.valueOf(data.get(newTransaction.getAssetName()) + newTransaction.getAssetAmount()).setScale(9, RoundingMode.HALF_UP).doubleValue();
                     Double new_investment = data.get("investment")+ newTransaction.getInvestmentAmount();
-                    data.put(newTransaction.getAssetName(), new_amount);
+                    data.put(newTransaction.getAssetID(), new_amount);
                     data.put("investment", new_investment);
                 }
                 else
                 {
                     Double new_investment = data.get("investment")+ newTransaction.getInvestmentAmount();
-                    data.put(newTransaction.getAssetName(), newTransaction.getAssetAmount());
+                    Double scaledAmount = BigDecimal.valueOf(newTransaction.assetAmount+ 0.000000001).setScale(9, RoundingMode.HALF_UP).doubleValue();
+                    data.put(newTransaction.getAssetID(),scaledAmount);
                     data.put("investment", new_investment);
 
                 }

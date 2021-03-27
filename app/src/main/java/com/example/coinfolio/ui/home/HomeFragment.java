@@ -28,6 +28,8 @@ import com.example.coinfolio.PortfolioAsset;
 import com.example.coinfolio.R;
 import com.example.coinfolio.SparkAdapter;
 import com.example.coinfolio.User;
+import com.example.coinfolio.VolleyCallback;
+import com.example.coinfolio.VolleySingleton;
 import com.example.coinfolio.transaction;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -50,7 +52,7 @@ import java.util.List;
 public class HomeFragment extends Fragment {
     private User currentUser = User.getInstance();
     private String uID = currentUser.getUuid();
-    private float[] btcdata;
+    private float[] portfolioSparkdata;
     private TickerView textView;
     private EditText editText;
     private SparkView sparkView;
@@ -59,13 +61,14 @@ public class HomeFragment extends Fragment {
     private RecyclerView portfolioRV;
     private List<PortfolioAsset> coin_portfolio = new ArrayList<>();
     private PortfolioAdapter portfolioAdapter;
+    RequestQueue queue;
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_home,container,false);
         textView = view.findViewById(R.id.text_home);
         sparkView = view.findViewById(R.id.sparkview);
         group = view.findViewById(R.id.radioGroup);
         portfolioAdapter = new PortfolioAdapter(coin_portfolio);
-        final RequestQueue queue = Volley.newRequestQueue(getContext());
+        queue = VolleySingleton.getInstance(getContext()).getRequestQueue();
         final String timeframeData = "1";
         final String url = "https://api.coingecko.com/api/v3/coins/";
         final String urlContinue = "/market_chart?vs_currency=usd&days=";
@@ -75,28 +78,43 @@ public class HomeFragment extends Fragment {
         textView.setAnimationDuration(400);
 
 
-//        group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(RadioGroup group, int checkedId) {
-//                int selectedId = group.getCheckedRadioButtonId();
-//                radioButton = view.findViewById(selectedId);
-//                String temp = radioButton.getText().toString();
-//                switch (temp) {
-//                    case "week":
-//                        getSparkData(queue, url + editText.getText().toString().toLowerCase() + urlContinue, "7");
-//                        Toast.makeText(getContext(), radioButton.getText(), Toast.LENGTH_SHORT).show();
-//                        break;
-//                    case "month":
-//                        getSparkData(queue, url + editText.getText().toString().toLowerCase() + urlContinue, "30");
-//                        Toast.makeText(getContext(), radioButton.getText(), Toast.LENGTH_SHORT).show();
-//                        break;
-//                    case "day":
-//                        getSparkData(queue, url + editText.getText().toString().toLowerCase() + urlContinue, "1");
-//                        Toast.makeText(getContext(), radioButton.getText(), Toast.LENGTH_SHORT).show();
-//                        break;
-//                }
-//            }
-//        });
+        group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                int selectedId = group.getCheckedRadioButtonId();
+                radioButton = view.findViewById(selectedId);
+                String temp = radioButton.getText().toString();
+                switch (temp) {
+                    case "Week":
+
+                        getSparkData(url, urlContinue, "7", new VolleyCallback() {
+                            @Override
+                            public void OnSuccess() {
+                                drawSpark(null);
+                            }});
+
+                        Toast.makeText(getContext(), radioButton.getText(), Toast.LENGTH_SHORT).show();
+                        break;
+                    case "Month":
+                        getSparkData(url, urlContinue, "30", new VolleyCallback() {
+                            @Override
+                            public void OnSuccess() {
+                                drawSpark(null);
+                            }});
+                        Toast.makeText(getContext(), radioButton.getText(), Toast.LENGTH_SHORT).show();
+                        break;
+                    case "Day":
+
+                        getSparkData(url, urlContinue, "1", new VolleyCallback() {
+                            @Override
+                            public void OnSuccess() {
+                                drawSpark(null);
+                            }});
+                        Toast.makeText(getContext(), radioButton.getText(), Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        });
 
 //        final FirebaseDatabase database = FirebaseDatabase.getInstance();
 //        final DatabaseReference ref = database.getReference("/"+uID+"/transaction/");
@@ -135,18 +153,18 @@ public class HomeFragment extends Fragment {
 
     public void drawSpark(VolleyError error)
     {
-        if(error != null)
+        if(error != null || portfolioSparkdata == null)
             Toast.makeText(getContext(),"error with the volley chart data", Toast.LENGTH_SHORT).show();
         else{
             //portfolio();
-            sparkView.setAdapter(new SparkAdapter(btcdata));
+            sparkView.setAdapter(new SparkAdapter(portfolioSparkdata));
             sparkView.setScrubEnabled(true);
             sparkView.setScrubListener(new SparkView.OnScrubListener() {
                 @Override
                 public void onScrubbed(Object value) {
                     if (value == null) {
-                        int lastIndex = btcdata.length-1;
-                        textView.setText(String.format("$%.2f",btcdata[lastIndex]),true);
+                        int lastIndex = portfolioSparkdata.length-1;
+                        textView.setText(String.format("$%.2f",portfolioSparkdata[lastIndex]),true);
                     } else {
                         textView.setText(String.format("$%.2f",value),true);
                     }
@@ -159,40 +177,54 @@ public class HomeFragment extends Fragment {
         }
 
     }
-    public void getSparkData(RequestQueue q, String APIurl, String timeframe)
+    public void getSparkData(String URLfirst, String URLend, String timeframe, VolleyCallback callback)
     {
-        APIurl = APIurl + timeframe;
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, APIurl,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            JSONArray array = jsonObject.getJSONArray("prices");
-                            btcdata = new float[array.length()];
-                            for (int i = 0; i < array.length(); i++) {
-                                JSONArray arraytemp = array.getJSONArray(i);
-                                btcdata[i] = (float) arraytemp.getDouble(1);
-                            }
 
-                            textView.setText(String.format("$%.2f",btcdata[array.length()-1]));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            textView.setText("error");
-                        }
-                        drawSpark(null);
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                textView.setText("That didn't work!");
+        for (int i = 0; i < coin_portfolio.size(); i++) {
+            final PortfolioAsset current = coin_portfolio.get(i);
+            if(current.getNameofAseet().equals("investment")) {
+                break;
             }
-        });
+            String APIurl1 = URLfirst + coin_portfolio.get(i).getNameofAseet() + URLend + timeframe;
+            // Request a string response from the provided URL.
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, APIurl1,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+                                JSONArray array = jsonObject.getJSONArray("prices");
+                                float []btcdata = new float[array.length()];
+                                for (int j = 0; j < array.length(); j++) {
+                                    JSONArray arraytemp = array.getJSONArray(j);
+                                    btcdata[j] = (float) arraytemp.getDouble(1)* current.getAmountofAsset().floatValue();
+                                }
+                                if(portfolioSparkdata == null || portfolioSparkdata.length != btcdata.length)
+                                    portfolioSparkdata = btcdata;
+                                else {
+                                    for (int k = 0; k < portfolioSparkdata.length; k++) {
+                                        portfolioSparkdata[k] = portfolioSparkdata[k] + btcdata[k];
+                                    }
+                                }
 
-        // Add the request to the RequestQueue.
-        q.add(stringRequest);
+                                //textView.setText(String.format("$%.2f",btcdata[array.length()-1]));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                textView.setText("error");
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    VolleyError er = error;
+                    textView.setText("That didn't work!");
+                }
+            });
+
+            // Add the request to the RequestQueue.
+            queue.add(stringRequest);
+        }
+        callback.OnSuccess();
     }
 
 //    public void ParseTransactions(List<transaction> transactionList, HashMap<String, Double> asset_portfolio)
