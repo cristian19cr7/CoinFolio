@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.coinfolio.AddingCoinsComplete;
 import com.example.coinfolio.Coin;
+import com.example.coinfolio.PortfolioAsset;
 import com.example.coinfolio.R;
 import com.example.coinfolio.User;
 import com.example.coinfolio.transaction;
@@ -28,7 +29,9 @@ import com.squareup.picasso.Picasso;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class AddAssetInfo extends AppCompatActivity {
     User mUser = User.getInstance();
@@ -79,24 +82,64 @@ public class AddAssetInfo extends AppCompatActivity {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                HashMap<String, Double> data = (HashMap<String, Double>)snapshot.getValue();
-                if(data.containsKey(newTransaction.getAssetID()))
-                {
-                    Double new_amount = BigDecimal.valueOf(data.get(newTransaction.getAssetName()) + newTransaction.getAssetAmount()).setScale(9, RoundingMode.HALF_UP).doubleValue();
-                    Double new_investment = data.get("investment")+ newTransaction.getInvestmentAmount();
-                    data.put(newTransaction.getAssetID(), new_amount);
-                    data.put("investment", new_investment);
-                }
-                else
-                {
-                    Double new_investment = data.get("investment")+ newTransaction.getInvestmentAmount();
-                    Double scaledAmount = BigDecimal.valueOf(newTransaction.assetAmount+ 0.000000001).setScale(9, RoundingMode.HALF_UP).doubleValue();
-                    data.put(newTransaction.getAssetID(),scaledAmount);
-                    data.put("investment", new_investment);
 
+//                if(snapshot.child(newTransaction.getAssetID()).exists())
+//                {
+//                    PortfolioAsset portfolioAsset = snapshot.getValue(PortfolioAsset.class);
+//                    portfolioAsset.updateAmount(newTransaction.getAssetAmount());
+//                    myRef.child(newTransaction.getAssetID()).setValue(portfolioAsset);
+//                }
+//                else
+//                {
+//                    PortfolioAsset newAsset = new PortfolioAsset(newTransaction.getAssetName(), newTransaction.getAssetAmount());
+//                    myRef.child(newTransaction.getAssetID()).setValue(newAsset);
+//                }
+                boolean AssetDoesExistInTheDatabase = false;
+                for(DataSnapshot dataSnapshot:snapshot.getChildren())
+                {
+                    if(dataSnapshot.getKey().equals(newTransaction.getAssetName()))
+                    {
+                        PortfolioAsset portfolioAsset = dataSnapshot.getValue(PortfolioAsset.class);
+                        portfolioAsset.updateAmount(newTransaction.getAssetAmount());
+                        myRef.child(newTransaction.getAssetName()).setValue(portfolioAsset);
+                        AssetDoesExistInTheDatabase = true;
+
+                    }
+                    else if(dataSnapshot.getKey().equals("investment"))
+                    {
+                        PortfolioAsset investmentAsset = snapshot.child("investment").getValue(PortfolioAsset.class);
+                        investmentAsset.updateAmount(newTransaction.getInvestmentAmount());
+                        myRef.child("investment").setValue(investmentAsset);
+                    }
                 }
-                myRef.setValue(data);
-                Log.d("hash", "portfolio is done loading in");
+                if(!AssetDoesExistInTheDatabase)
+                {
+                    PortfolioAsset newAsset = new PortfolioAsset(newTransaction.getAssetID(), newTransaction.getAssetAmount());
+                    myRef.child(newTransaction.getAssetName()).setValue(newAsset);
+                }
+
+//                HashMap<String, Double> data1 = (HashMap<String, Double>)snapshot.getValue();
+//                if(data1.containsKey(newTransaction.getAssetID()))
+//                {
+//                    HashMap<String, HashMap<String, Double>> data = (HashMap<String, HashMap<String, Double>>)snapshot.getValue();
+//                    HashMap<String, Double> amount = data.get(newTransaction.getAssetName());
+//                    HashMap<String, Double> invest = data.get("investment");
+//                    Double new_amount = BigDecimal.valueOf(amount.get(newTransaction.getAssetName()) + newTransaction.getAssetAmount()).setScale(9, RoundingMode.HALF_UP).doubleValue();
+//                    Double new_investment = invest.get("investment")+ newTransaction.getInvestmentAmount();
+//                    data.put(newTransaction.getAssetID(), amount);
+//                    data.put("investment", invest);
+//                    myRef.setValue(data);
+//                }
+//                else
+//                {
+//                    Double new_investment = data1.get("investment")+ newTransaction.getInvestmentAmount();
+//                    Double scaledAmount = BigDecimal.valueOf(newTransaction.assetAmount+ 0.000000001).setScale(9, RoundingMode.HALF_UP).doubleValue();
+//                    data1.put(newTransaction.getAssetID(),scaledAmount);
+//                    data1.put("investment", new_investment);
+//                    myRef.setValue(data1);
+//                }
+//                //myRef.setValue(data);
+
             }
 
             @Override
@@ -104,6 +147,25 @@ public class AddAssetInfo extends AppCompatActivity {
 
             }
         });
+
+//        final DatabaseReference investmentRef = start.getReference().child(mUser.getUuid()).child("Portfolio").child("investment");
+//        investmentRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if(snapshot.exists())
+//                {
+//                    PortfolioAsset investmentAsset = snapshot.getValue(PortfolioAsset.class);
+//                    investmentAsset.updateAmount(newTransaction.getInvestmentAmount());
+//                    myRef.setValue(investmentAsset);
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
     }
 
 }

@@ -8,7 +8,19 @@ public class PortfolioAsset {
         NameofAseet = nameofAseet;
         AmountofAsset = amountofAsset;
     }
+    public PortfolioAsset(PortfolioAsset newPortfolioasset)
+    {
+        this.NameofAseet = newPortfolioasset.getNameofAseet();
+        this.AmountofAsset = newPortfolioasset.getAmountofAsset();
+    }
 
+    public PortfolioAsset() {
+    }
+
+    public void updateAmount(Double amountToIncreaseBy)
+    {
+        this.AmountofAsset = this.AmountofAsset + amountToIncreaseBy;
+    }
     public String getNameofAseet() {
         return NameofAseet;
     }

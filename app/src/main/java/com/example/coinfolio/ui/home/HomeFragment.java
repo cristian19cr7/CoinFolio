@@ -49,6 +49,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.android.volley.VolleyLog.TAG;
+
 public class HomeFragment extends Fragment {
     private User currentUser = User.getInstance();
     private String uID = currentUser.getUuid();
@@ -86,31 +88,32 @@ public class HomeFragment extends Fragment {
                 String temp = radioButton.getText().toString();
                 switch (temp) {
                     case "Week":
-
                         getSparkData(url, urlContinue, "7", new VolleyCallback() {
                             @Override
-                            public void OnSuccess() {
-                                drawSpark(null);
-                            }});
+                            public void OnSuccess(int i, float[] portfolioArr) {
+                                drawSpark(null, portfolioArr);
+                                Toast.makeText(getContext(), String.valueOf(i), Toast.LENGTH_SHORT).show();
+                            }}, 0, null);
 
-                        Toast.makeText(getContext(), radioButton.getText(), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getContext(), radioButton.getText(), Toast.LENGTH_SHORT).show();
                         break;
                     case "Month":
                         getSparkData(url, urlContinue, "30", new VolleyCallback() {
                             @Override
-                            public void OnSuccess() {
-                                drawSpark(null);
-                            }});
-                        Toast.makeText(getContext(), radioButton.getText(), Toast.LENGTH_SHORT).show();
+                            public void OnSuccess(int i,float[] portfolioArr) {
+                                drawSpark(null,portfolioArr);
+                                Toast.makeText(getContext(), String.valueOf(i), Toast.LENGTH_SHORT).show();
+                            }},0,null);
+                        //Toast.makeText(getContext(), radioButton.getText(), Toast.LENGTH_SHORT).show();
                         break;
                     case "Day":
-
                         getSparkData(url, urlContinue, "1", new VolleyCallback() {
                             @Override
-                            public void OnSuccess() {
-                                drawSpark(null);
-                            }});
-                        Toast.makeText(getContext(), radioButton.getText(), Toast.LENGTH_SHORT).show();
+                            public void OnSuccess(int i, float[] portfolioArr) {
+                                drawSpark(null,portfolioArr);
+                                Toast.makeText(getContext(), String.valueOf(i), Toast.LENGTH_SHORT).show();
+                            }},0,null);
+                        //Toast.makeText(getContext(), radioButton.getText(), Toast.LENGTH_SHORT).show();
                         break;
                 }
             }
@@ -151,20 +154,20 @@ public class HomeFragment extends Fragment {
 
     }
 
-    public void drawSpark(VolleyError error)
+    public void drawSpark(VolleyError error, final float[] sparkArr)
     {
-        if(error != null || portfolioSparkdata == null)
+        if(error != null || sparkArr == null)
             Toast.makeText(getContext(),"error with the volley chart data", Toast.LENGTH_SHORT).show();
         else{
             //portfolio();
-            sparkView.setAdapter(new SparkAdapter(portfolioSparkdata));
+            sparkView.setAdapter(new SparkAdapter(sparkArr));
             sparkView.setScrubEnabled(true);
             sparkView.setScrubListener(new SparkView.OnScrubListener() {
                 @Override
                 public void onScrubbed(Object value) {
                     if (value == null) {
-                        int lastIndex = portfolioSparkdata.length-1;
-                        textView.setText(String.format("$%.2f",portfolioSparkdata[lastIndex]),true);
+                        int lastIndex = sparkArr.length-1;
+                        textView.setText(String.format("$%.2f",sparkArr[lastIndex]),true);
                     } else {
                         textView.setText(String.format("$%.2f",value),true);
                     }
@@ -173,58 +176,86 @@ public class HomeFragment extends Fragment {
             sparkView.setLineColor(getResources().getColor(R.color.colorAccent));
             sparkView.setPadding(20,20,20,0);
             sparkView.setLineWidth(6.5f);
-
+            textView.setText(String.format("$%.2f",sparkArr[sparkArr.length-1]),true);
         }
 
     }
-    public void getSparkData(String URLfirst, String URLend, String timeframe, VolleyCallback callback)
+    public void getSparkData(final String URLfirst, final String URLend, final String timeframe, final VolleyCallback callback, int index, final float[] dataArr)
     {
 
-        for (int i = 0; i < coin_portfolio.size(); i++) {
-            final PortfolioAsset current = coin_portfolio.get(i);
-            if(current.getNameofAseet().equals("investment")) {
-                break;
-            }
-            String APIurl1 = URLfirst + coin_portfolio.get(i).getNameofAseet() + URLend + timeframe;
-            // Request a string response from the provided URL.
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, APIurl1,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                JSONObject jsonObject = new JSONObject(response);
-                                JSONArray array = jsonObject.getJSONArray("prices");
-                                float []btcdata = new float[array.length()];
+        final PortfolioAsset current = coin_portfolio.get(index);
+        if(current.getNameofAseet().equals("investment") || index > coin_portfolio.size()) {
+            callback.OnSuccess(index, dataArr);
+            return;
+        }
+        String APIurl1 = URLfirst + coin_portfolio.get(index).getNameofAseet() + URLend + timeframe;
+        final int next = index+1;
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, APIurl1,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            JSONArray array = jsonObject.getJSONArray("prices");
+                            float []data;
+                            if(dataArr == null)
+                            {
+                               data = new float[array.length()];
                                 for (int j = 0; j < array.length(); j++) {
                                     JSONArray arraytemp = array.getJSONArray(j);
-                                    btcdata[j] = (float) arraytemp.getDouble(1)* current.getAmountofAsset().floatValue();
+                                    data[j] = (float) arraytemp.getDouble(1)* current.getAmountofAsset().floatValue();
+
                                 }
-                                if(portfolioSparkdata == null || portfolioSparkdata.length != btcdata.length)
-                                    portfolioSparkdata = btcdata;
-                                else {
-                                    for (int k = 0; k < portfolioSparkdata.length; k++) {
-                                        portfolioSparkdata[k] = portfolioSparkdata[k] + btcdata[k];
+                                Log.d(TAG, "onResponse: null "+ array.length());
+                            }
+                            else
+                            {
+                                if(dataArr.length > array.length())
+                                {
+                                    for (int j = 0; j < array.length(); j++) {
+                                        JSONArray arraytemp = array.getJSONArray(j);
+                                        dataArr[j] = dataArr[j] + (float) arraytemp.getDouble(1)* current.getAmountofAsset().floatValue();
                                     }
                                 }
-
-                                //textView.setText(String.format("$%.2f",btcdata[array.length()-1]));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                textView.setText("error");
+                                else
+                                {
+                                    for (int j = 0; j < dataArr.length; j++) {
+                                        JSONArray arraytemp = array.getJSONArray(j);
+                                        dataArr[j] = dataArr[j] + (float) arraytemp.getDouble(1)* current.getAmountofAsset().floatValue();
+                                    }
+                                }
+                                data = dataArr;
+                                Log.d(TAG, "onResponse: not null "+ array.length());
                             }
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    VolleyError er = error;
-                    textView.setText("That didn't work!");
-                }
-            });
 
-            // Add the request to the RequestQueue.
-            queue.add(stringRequest);
-        }
-        callback.OnSuccess();
+
+//                            if(portfolioSparkdata == null || portfolioSparkdata.length != btcdata.length)
+//                                portfolioSparkdata = btcdata;
+//                            else {
+//                                for (int k = 0; k < portfolioSparkdata.length; k++) {
+//                                    portfolioSparkdata[k] = portfolioSparkdata[k] + btcdata[k];
+//                                }
+//                            }
+
+                            getSparkData(URLfirst, URLend, timeframe, callback, next, data);
+                            //textView.setText(String.format("$%.2f",btcdata[array.length()-1]));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            textView.setText("error");
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyError er = error;
+                textView.setText("That didn't work!");
+            }
+        });
+
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+
     }
 
 //    public void ParseTransactions(List<transaction> transactionList, HashMap<String, Double> asset_portfolio)
@@ -252,8 +283,8 @@ public class HomeFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    PortfolioAsset asset = new PortfolioAsset(postSnapshot.getKey(), Double.parseDouble(postSnapshot.getValue().toString()));
-                    coin_portfolio.add(asset);
+                    PortfolioAsset Asset = postSnapshot.getValue(PortfolioAsset.class);
+                    coin_portfolio.add(Asset);
                 }
                 portfolioAdapter.notifyDataSetChanged();
             }
@@ -276,7 +307,8 @@ public class HomeFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.getValue() == null)
                 {
-                    myRef.child("investment").setValue(0.0001);
+                    PortfolioAsset defaultInvestment = new PortfolioAsset("investment", 0.001);
+                    myRef.child("investment").setValue(defaultInvestment);
                 }
 
             }

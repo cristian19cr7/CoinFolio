@@ -39,8 +39,8 @@
 
         <RadioGroup
             android:id="@+id/radioGroup"
-            android:layout_width="355dp"
-            android:layout_height="43dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -49,22 +49,28 @@
 
             <RadioButton
                 android:id="@+id/radioButton"
-                android:layout_width="wrap_content"
+                style="@style/CustomRadioBtn"
+                android:layout_width="130dp"
                 android:layout_height="wrap_content"
-                android:text="@string/Day" />
+                android:text="@string/Day"
+                android:textAlignment="center"/>
 
             <RadioButton
                 android:id="@+id/radioButton2"
-                android:layout_width="wrap_content"
+                style="@style/CustomRadioBtn"
+                android:layout_width="130dp"
                 android:layout_height="wrap_content"
-                android:text="@string/Week" />
+                android:text="@string/Week"
+                android:textAlignment="center"/>
 
             <RadioButton
                 android:id="@+id/radioButton3"
-                android:layout_width="wrap_content"
+                style="@style/CustomRadioBtn"
+                android:layout_width="110dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/Month"/>
+                android:textAlignment="center"
+                android:text="@string/Month" />
         </RadioGroup>
 
         <androidx.recyclerview.widget.RecyclerView
