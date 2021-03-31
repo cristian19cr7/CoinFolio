@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -64,12 +65,15 @@ public class HomeFragment extends Fragment {
     private List<PortfolioAsset> coin_portfolio = new ArrayList<>();
     private PortfolioAdapter portfolioAdapter;
     RequestQueue queue;
+    ProgressBar progressBar;
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_home,container,false);
         textView = view.findViewById(R.id.text_home);
         sparkView = view.findViewById(R.id.sparkview);
         group = view.findViewById(R.id.radioGroup);
+        progressBar = view.findViewById(R.id.progressBarHome);
         portfolioAdapter = new PortfolioAdapter(coin_portfolio);
+        progressBar.setVisibility(View.INVISIBLE);
         queue = VolleySingleton.getInstance(getContext()).getRequestQueue();
         final String timeframeData = "1";
         final String url = "https://api.coingecko.com/api/v3/coins/";
@@ -79,7 +83,6 @@ public class HomeFragment extends Fragment {
         textView.setCharacterLists(TickerUtils.provideNumberList());
         textView.setAnimationDuration(400);
 
-
         group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -88,6 +91,7 @@ public class HomeFragment extends Fragment {
                 String temp = radioButton.getText().toString();
                 switch (temp) {
                     case "Week":
+                        progressBar.setVisibility(View.VISIBLE);
                         getSparkData(url, urlContinue, "7", new VolleyCallback() {
                             @Override
                             public void OnSuccess(int i, float[] portfolioArr) {
@@ -98,6 +102,7 @@ public class HomeFragment extends Fragment {
                         //Toast.makeText(getContext(), radioButton.getText(), Toast.LENGTH_SHORT).show();
                         break;
                     case "Month":
+                        progressBar.setVisibility(View.VISIBLE);
                         getSparkData(url, urlContinue, "30", new VolleyCallback() {
                             @Override
                             public void OnSuccess(int i,float[] portfolioArr) {
@@ -107,6 +112,7 @@ public class HomeFragment extends Fragment {
                         //Toast.makeText(getContext(), radioButton.getText(), Toast.LENGTH_SHORT).show();
                         break;
                     case "Day":
+                        progressBar.setVisibility(View.VISIBLE);
                         getSparkData(url, urlContinue, "1", new VolleyCallback() {
                             @Override
                             public void OnSuccess(int i, float[] portfolioArr) {
@@ -177,6 +183,7 @@ public class HomeFragment extends Fragment {
             sparkView.setPadding(20,20,20,0);
             sparkView.setLineWidth(6.5f);
             textView.setText(String.format("$%.2f",sparkArr[sparkArr.length-1]),true);
+            progressBar.setVisibility(View.INVISIBLE);
         }
 
     }
@@ -318,5 +325,6 @@ public class HomeFragment extends Fragment {
 
             }
         });
+
     }
 }
