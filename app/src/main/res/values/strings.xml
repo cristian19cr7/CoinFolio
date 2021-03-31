@@ -19,6 +19,7 @@
     <string name="Week">Week</string>
     <string name="Month">Month</string>
     <string name="SignOut">Sign Out</string>
+    <string name="MyPortfolio">My Portfolio</string>
 
     <string name="title_activity_adding_coins_complete">AddingCoinsComplete</string>
     <string name="dummy_button">Dummy Button</string>

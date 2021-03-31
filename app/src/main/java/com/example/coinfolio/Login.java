@@ -60,7 +60,7 @@ public class Login extends AppCompatActivity {
                 mGoogleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(getApplicationContext(),"Sign Out", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(),"User Signed Out", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
