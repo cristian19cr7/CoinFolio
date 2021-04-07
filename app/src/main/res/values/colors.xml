@@ -4,6 +4,6 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
-    <color name="black_overlay">#66000000</color>
-    <color name="ColorRadioBtn">#FFFFFF</color>
+    <color name="black_overlay">#66A33636</color>
+    <color name="ColorRadioBtn">#292929</color>
 </resources>
