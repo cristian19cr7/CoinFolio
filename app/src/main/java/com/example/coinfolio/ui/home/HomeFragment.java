@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -51,7 +52,7 @@ import java.util.List;
 
 import static com.android.volley.VolleyLog.TAG;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolder.OnClick{
     private User currentUser = User.getInstance();
     private String uID = currentUser.getUuid();
     private float[] portfolioSparkdata;
@@ -62,14 +63,16 @@ public class HomeFragment extends Fragment {
     private RadioButton radioButton;
     private RecyclerView portfolioRV;
     private List<PortfolioAsset> coin_portfolio = new ArrayList<>();
-    private PortfolioAdapter portfolioAdapter;
+    private PortfolioAdapter portfolioAdapter= new PortfolioAdapter(coin_portfolio, this);
     RequestQueue queue;
+    ProgressBar progressBar;
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_home,container,false);
         textView = view.findViewById(R.id.text_home);
         sparkView = view.findViewById(R.id.sparkview);
         group = view.findViewById(R.id.radioGroup);
-        portfolioAdapter = new PortfolioAdapter(coin_portfolio);
+        progressBar = view.findViewById(R.id.progressBarHome);
+        progressBar.setVisibility(View.INVISIBLE);
         queue = VolleySingleton.getInstance(getContext()).getRequestQueue();
         final String timeframeData = "1";
         final String url = "https://api.coingecko.com/api/v3/coins/";
@@ -79,7 +82,6 @@ public class HomeFragment extends Fragment {
         textView.setCharacterLists(TickerUtils.provideNumberList());
         textView.setAnimationDuration(400);
 
-
         group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -88,6 +90,7 @@ public class HomeFragment extends Fragment {
                 String temp = radioButton.getText().toString();
                 switch (temp) {
                     case "Week":
+                        progressBar.setVisibility(View.VISIBLE);
                         getSparkData(url, urlContinue, "7", new VolleyCallback() {
                             @Override
                             public void OnSuccess(int i, float[] portfolioArr) {
@@ -98,6 +101,7 @@ public class HomeFragment extends Fragment {
                         //Toast.makeText(getContext(), radioButton.getText(), Toast.LENGTH_SHORT).show();
                         break;
                     case "Month":
+                        progressBar.setVisibility(View.VISIBLE);
                         getSparkData(url, urlContinue, "30", new VolleyCallback() {
                             @Override
                             public void OnSuccess(int i,float[] portfolioArr) {
@@ -107,6 +111,7 @@ public class HomeFragment extends Fragment {
                         //Toast.makeText(getContext(), radioButton.getText(), Toast.LENGTH_SHORT).show();
                         break;
                     case "Day":
+                        progressBar.setVisibility(View.VISIBLE);
                         getSparkData(url, urlContinue, "1", new VolleyCallback() {
                             @Override
                             public void OnSuccess(int i, float[] portfolioArr) {
@@ -177,6 +182,7 @@ public class HomeFragment extends Fragment {
             sparkView.setPadding(20,20,20,0);
             sparkView.setLineWidth(6.5f);
             textView.setText(String.format("$%.2f",sparkArr[sparkArr.length-1]),true);
+            progressBar.setVisibility(View.INVISIBLE);
         }
 
     }
@@ -188,7 +194,7 @@ public class HomeFragment extends Fragment {
             callback.OnSuccess(index, dataArr);
             return;
         }
-        String APIurl1 = URLfirst + coin_portfolio.get(index).getNameofAseet() + URLend + timeframe;
+        String APIurl1 = URLfirst + coin_portfolio.get(index).getAssetID() + URLend + timeframe;
         final int next = index+1;
         // Request a string response from the provided URL.
         StringRequest stringRequest = new StringRequest(Request.Method.GET, APIurl1,
@@ -229,15 +235,6 @@ public class HomeFragment extends Fragment {
                                 Log.d(TAG, "onResponse: not null "+ array.length());
                             }
 
-
-//                            if(portfolioSparkdata == null || portfolioSparkdata.length != btcdata.length)
-//                                portfolioSparkdata = btcdata;
-//                            else {
-//                                for (int k = 0; k < portfolioSparkdata.length; k++) {
-//                                    portfolioSparkdata[k] = portfolioSparkdata[k] + btcdata[k];
-//                                }
-//                            }
-
                             getSparkData(URLfirst, URLend, timeframe, callback, next, data);
                             //textView.setText(String.format("$%.2f",btcdata[array.length()-1]));
                         } catch (JSONException e) {
@@ -258,23 +255,6 @@ public class HomeFragment extends Fragment {
 
     }
 
-//    public void ParseTransactions(List<transaction> transactionList, HashMap<String, Double> asset_portfolio)
-//    {
-//        for (int i = 0; i < transactionList.size(); i++)
-//        {
-//            if(asset_portfolio.containsKey(transactionList.get(i).getAssetName()))
-//            {
-//                Double current_amount;
-//                current_amount = asset_portfolio.get(transactionList.get(i).getAssetName());
-//                current_amount += transactionList.get(i).getAssetAmount();
-//                asset_portfolio.put(transactionList.get(i).getAssetName(), current_amount);
-//            }
-//            else
-//            {
-//                asset_portfolio.put(transactionList.get(i).getAssetName(), transactionList.get(i).getAssetAmount());
-//            }
-//        }
-//    }
     public void getPortfolio()
     {
         FirebaseDatabase start = FirebaseDatabase.getInstance();
@@ -307,7 +287,7 @@ public class HomeFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.getValue() == null)
                 {
-                    PortfolioAsset defaultInvestment = new PortfolioAsset("investment", 0.001);
+                    PortfolioAsset defaultInvestment = new PortfolioAsset("investment","investment_id",0.001);
                     myRef.child("investment").setValue(defaultInvestment);
                 }
 
@@ -318,5 +298,14 @@ public class HomeFragment extends Fragment {
 
             }
         });
+
     }
+
+    @Override
+    public void AssetClicked(int position) {
+        Toast.makeText(getContext(),coin_portfolio.get(position).getNameofAseet(), Toast.LENGTH_SHORT).show();
+
+
+    }
+
 }

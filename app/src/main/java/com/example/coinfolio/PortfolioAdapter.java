@@ -11,20 +11,23 @@ import java.util.List;
 
 public class PortfolioAdapter extends RecyclerView.Adapter<PortfolioAdapter.ViewHolder>{
     private List<PortfolioAsset> localDataSet;
+    private ViewHolder.OnClick ClickListener;
 
     /**
      * Provide a reference to the type of views that you are using
      * (custom ViewHolder).
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private final TextView portfolioName, portfolioAmount;
-
-        public ViewHolder(View view) {
+        private OnClick clickListener;
+        public ViewHolder(View view, OnClick listener) {
             super(view);
             // Define click listener for the ViewHolder's View
 
             portfolioName = (TextView) view.findViewById(R.id.portfolio_asset_name);
             portfolioAmount = view.findViewById(R.id.portfolio_asset_amount);
+            this.clickListener = listener;
+            view.setOnClickListener(this);
         }
 
         public TextView getPortfolioName() {
@@ -33,7 +36,19 @@ public class PortfolioAdapter extends RecyclerView.Adapter<PortfolioAdapter.View
         public TextView getPortfolioAmount() {
             return portfolioAmount;
         }
+
+        @Override
+        public void onClick(View v)
+        {
+            clickListener.AssetClicked(getAdapterPosition());
+        }
+
+        public interface OnClick
+        {
+            void AssetClicked(int position);
+        }
     }
+
 
     /**
      * Initialize the dataset of the Adapter.
@@ -41,8 +56,9 @@ public class PortfolioAdapter extends RecyclerView.Adapter<PortfolioAdapter.View
      * @param dataSet String[] containing the data to populate views to be used
      * by RecyclerView.
      */
-    public PortfolioAdapter(List<PortfolioAsset> dataSet) {
+    public PortfolioAdapter(List<PortfolioAsset> dataSet, ViewHolder.OnClick clickListener) {
         localDataSet = dataSet;
+        ClickListener = clickListener;
     }
 
     // Create new views (invoked by the layout manager)
@@ -52,7 +68,7 @@ public class PortfolioAdapter extends RecyclerView.Adapter<PortfolioAdapter.View
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.portfolio_item, viewGroup, false);
 
-        return new ViewHolder(view);
+        return new ViewHolder(view, ClickListener);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -70,4 +86,5 @@ public class PortfolioAdapter extends RecyclerView.Adapter<PortfolioAdapter.View
     public int getItemCount() {
         return localDataSet.size();
     }
+
 }
