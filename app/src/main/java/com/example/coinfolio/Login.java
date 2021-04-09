@@ -2,6 +2,7 @@ package com.example.coinfolio;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -39,6 +40,8 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        setTheme(R.style.DarkTheme);
         setContentView(R.layout.activity_login);
         signInButton = findViewById(R.id.siginBtn);
         mAuth = FirebaseAuth.getInstance();
@@ -60,7 +63,7 @@ public class Login extends AppCompatActivity {
                 mGoogleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(getApplicationContext(),"Sign Out", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(),"User Signed Out", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
