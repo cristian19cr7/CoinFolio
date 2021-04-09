@@ -114,7 +114,7 @@ public class AddAssetInfo extends AppCompatActivity {
                 }
                 if(!AssetDoesExistInTheDatabase)
                 {
-                    PortfolioAsset newAsset = new PortfolioAsset(newTransaction.getAssetID(), newTransaction.getAssetAmount());
+                    PortfolioAsset newAsset = new PortfolioAsset(newTransaction.getAssetName(), newTransaction.getAssetID(),newTransaction.getAssetAmount());
                     myRef.child(newTransaction.getAssetName()).setValue(newAsset);
                 }
 

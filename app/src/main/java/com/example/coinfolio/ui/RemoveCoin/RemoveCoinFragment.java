@@ -1,9 +1,11 @@
 package com.example.coinfolio.ui.RemoveCoin;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -15,6 +17,7 @@ import com.example.coinfolio.PortfolioAdapter;
 import com.example.coinfolio.PortfolioAsset;
 import com.example.coinfolio.R;
 import com.example.coinfolio.User;
+import com.example.coinfolio.ui.Addcoins.AddAssetInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,16 +27,14 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RemoveCoinFragment extends Fragment {
+public class RemoveCoinFragment extends Fragment implements PortfolioAdapter.ViewHolder.OnClick {
 
     private User currentUser = User.getInstance();
     private List<PortfolioAsset> portfolio = new ArrayList<>();
     private RecyclerView removeRV;
-    private PortfolioAdapter portfolioAdapter;
+    private PortfolioAdapter portfolioAdapter = new PortfolioAdapter(portfolio,this);
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_remove_coins,container,false);
-        portfolioAdapter = new PortfolioAdapter(portfolio);
-
         getPortfolio();
         getRV(view);
         return  view;
@@ -66,4 +67,20 @@ public class RemoveCoinFragment extends Fragment {
             }
         });
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        portfolioAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void AssetClicked(int position)
+    {
+//        Toast.makeText(getContext(),portfolio.get(position).getNameofAseet().toString(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getContext(), RemoveCoinAssetInfo.class);
+        intent.putExtra("portfolioAsset", portfolio.get(position));
+        startActivity(intent);
+    }
+
 }
