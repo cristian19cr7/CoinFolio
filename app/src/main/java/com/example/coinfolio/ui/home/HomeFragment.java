@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -63,11 +64,14 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
     private RadioButton radioButton;
     private RecyclerView portfolioRV;
     private List<PortfolioAsset> coin_portfolio = new ArrayList<>();
-    private PortfolioAdapter portfolioAdapter= new PortfolioAdapter(coin_portfolio, this);
+    private PortfolioAsset investment_item;
+    private PortfolioAdapter portfolioAdapter= new PortfolioAdapter(coin_portfolio, this, getContext());
     RequestQueue queue;
     ProgressBar progressBar;
+    TextView totalInvestmentTV;
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_home,container,false);
+        totalInvestmentTV = view.findViewById(R.id.textView2);
         textView = view.findViewById(R.id.text_home);
         sparkView = view.findViewById(R.id.sparkview);
         group = view.findViewById(R.id.radioGroup);
@@ -189,11 +193,12 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
     public void getSparkData(final String URLfirst, final String URLend, final String timeframe, final VolleyCallback callback, int index, final float[] dataArr)
     {
 
-        final PortfolioAsset current = coin_portfolio.get(index);
-        if(current.getNameofAseet().equals("investment") || index > coin_portfolio.size()) {
+
+        if(index >= coin_portfolio.size()) {
             callback.OnSuccess(index, dataArr);
             return;
         }
+        final PortfolioAsset current = coin_portfolio.get(index);
         String APIurl1 = URLfirst + coin_portfolio.get(index).getAssetID() + URLend + timeframe;
         final int next = index+1;
         // Request a string response from the provided URL.
@@ -264,7 +269,16 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     PortfolioAsset Asset = postSnapshot.getValue(PortfolioAsset.class);
-                    coin_portfolio.add(Asset);
+                    if(Asset.getNameofAseet().equals("investment"))
+                    {
+                        investment_item = Asset;
+                        totalInvestmentTV.setText(investment_item.getAmountofAsset().toString());
+                    }
+                    else
+                    {
+                        coin_portfolio.add(Asset);
+                    }
+
                 }
                 portfolioAdapter.notifyDataSetChanged();
             }
@@ -287,7 +301,7 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.getValue() == null)
                 {
-                    PortfolioAsset defaultInvestment = new PortfolioAsset("investment","investment_id",0.001);
+                    PortfolioAsset defaultInvestment = new PortfolioAsset("investment","investment_id",0.001, 0.001);
                     myRef.child("investment").setValue(defaultInvestment);
                 }
 

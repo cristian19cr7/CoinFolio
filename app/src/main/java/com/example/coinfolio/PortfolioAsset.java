@@ -6,11 +6,13 @@ public class PortfolioAsset implements Serializable {
     private String NameofAseet;
     private Double AmountofAsset;
     private String AssetID;
+    private Double InvestmentOnThisAsset;
 
-    public PortfolioAsset(String nameofAseet, String id, Double amountofAsset) {
+    public PortfolioAsset(String nameofAseet, String id, Double amountofAsset, Double invest) {
         NameofAseet = nameofAseet;
         AmountofAsset = amountofAsset;
         AssetID = id;
+        InvestmentOnThisAsset = invest;
     }
     public PortfolioAsset(PortfolioAsset newPortfolioasset)
     {
@@ -29,6 +31,10 @@ public class PortfolioAsset implements Serializable {
     public void removeAmount(Double amount)
     {
         this.AmountofAsset = this.AmountofAsset - amount;
+    }
+    public void updateInvestmentAmount(Double amount)
+    {
+        this.InvestmentOnThisAsset += amount;
     }
     public String getNameofAseet() {
         return NameofAseet;
@@ -52,5 +58,12 @@ public class PortfolioAsset implements Serializable {
 
     public void setAssetID(String assetID) {
         AssetID = assetID;
+    }
+    public Double getInvestmentonThisAsset() {
+        return InvestmentOnThisAsset;
+    }
+
+    public void setInvestmentonThisAsset(Double investmentonThisAsset) {
+        InvestmentOnThisAsset = investmentonThisAsset;
     }
 }

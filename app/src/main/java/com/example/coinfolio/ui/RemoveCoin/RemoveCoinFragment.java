@@ -32,7 +32,7 @@ public class RemoveCoinFragment extends Fragment implements PortfolioAdapter.Vie
     private User currentUser = User.getInstance();
     private List<PortfolioAsset> portfolio = new ArrayList<>();
     private RecyclerView removeRV;
-    private PortfolioAdapter portfolioAdapter = new PortfolioAdapter(portfolio,this);
+    private PortfolioAdapter portfolioAdapter = new PortfolioAdapter(portfolio,this, getContext());
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_remove_coins,container,false);
         getPortfolio();
@@ -56,7 +56,8 @@ public class RemoveCoinFragment extends Fragment implements PortfolioAdapter.Vie
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     PortfolioAsset Asset = postSnapshot.getValue(PortfolioAsset.class);
-                    portfolio.add(Asset);
+                    if(!Asset.getNameofAseet().equals("investment"))
+                        portfolio.add(Asset);
                 }
                 portfolioAdapter.notifyDataSetChanged();
             }

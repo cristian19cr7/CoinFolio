@@ -101,6 +101,7 @@ public class AddAssetInfo extends AppCompatActivity {
                     {
                         PortfolioAsset portfolioAsset = dataSnapshot.getValue(PortfolioAsset.class);
                         portfolioAsset.updateAmount(newTransaction.getAssetAmount());
+                        portfolioAsset.updateInvestmentAmount(newTransaction.getInvestmentAmount());
                         myRef.child(newTransaction.getAssetName()).setValue(portfolioAsset);
                         AssetDoesExistInTheDatabase = true;
 
@@ -114,7 +115,7 @@ public class AddAssetInfo extends AppCompatActivity {
                 }
                 if(!AssetDoesExistInTheDatabase)
                 {
-                    PortfolioAsset newAsset = new PortfolioAsset(newTransaction.getAssetName(), newTransaction.getAssetID(),newTransaction.getAssetAmount());
+                    PortfolioAsset newAsset = new PortfolioAsset(newTransaction.getAssetName(), newTransaction.getAssetID(),newTransaction.getAssetAmount(), newTransaction.getInvestmentAmount());
                     myRef.child(newTransaction.getAssetName()).setValue(newAsset);
                 }
 
