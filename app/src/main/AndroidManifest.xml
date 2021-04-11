@@ -17,7 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.RemoveCoin.RemoveCoinAssetInfo"></activity>
+        <activity android:name=".SignUp"></activity>
+        <activity android:name=".ui.RemoveCoin.RemoveCoinAssetInfo" />
         <activity
             android:name=".AddingCoinsComplete"
             android:configChanges="orientation|keyboardHidden|screenSize"

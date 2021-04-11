@@ -6,12 +6,11 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -20,7 +19,6 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,11 +29,13 @@ import static com.google.android.gms.auth.api.signin.GoogleSignIn.*;
 
 public class Login extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123;
-    Button signOutBtn;
+    Button signOutBtn, signUpbtn;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     private GoogleSignInClient mGoogleSignInClient;
     SignInButton signInButton;
+    EditText email_input, password_input;
+    private static final String TAaG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +44,9 @@ public class Login extends AppCompatActivity {
         setTheme(R.style.DarkTheme);
         setContentView(R.layout.activity_login);
         signInButton = findViewById(R.id.siginBtn);
+        signUpbtn = findViewById(R.id.create_account_btn);
+        email_input = findViewById(R.id.email_signin_input);
+        password_input = findViewById(R.id.password_signin_input);
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         Request();
@@ -55,19 +58,49 @@ public class Login extends AppCompatActivity {
             }
         });
 
-        signOutBtn = findViewById(R.id.signOut);
+        signOutBtn = findViewById(R.id.signin);
         signOutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-                mGoogleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(getApplicationContext(),"User Signed Out", Toast.LENGTH_SHORT).show();
-                    }
-                });
+//                FirebaseAuth.getInstance().signOut();
+//                mGoogleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//                        Toast.makeText(getApplicationContext(),"User Signed Out", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+                EmailPasswordSignin(email_input.getText().toString(), password_input.getText().toString(), mAuth);
             }
         });
+
+        signUpbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplication(), SignUp.class);
+                startActivity(intent);
+            }
+        });
+    }
+
+    public void EmailPasswordSignin(String email, String password, FirebaseAuth a)
+    {
+        a.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Intent intent = new Intent(getApplication(), MainActivity.class);
+                            intent.putExtra("uuid", mAuth.getCurrentUser().getUid());
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Toast.makeText(getApplicationContext(), task.getException().toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     public void Request(){
@@ -136,6 +169,13 @@ public class Login extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null)
+        {
+            Intent intent = new Intent(getApplication(), MainActivity.class);
+            intent.putExtra("uuid", mAuth.getCurrentUser().getUid());
+            startActivity(intent);
+            finish();
+        }
         //updateUI(currentUser);
     }
 
