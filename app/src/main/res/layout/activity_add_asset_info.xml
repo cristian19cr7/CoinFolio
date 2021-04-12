@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.Addcoins.AddAssetInfo">
+    tools:context=".ui.Addcoins.AddAssetInfo"
+    android:background="#121212">
 
     <EditText
         android:id="@+id/AssetAmountInput"
@@ -18,7 +19,10 @@
         app:layout_constraintHorizontal_bias="0.804"
         app:layout_constraintStart_toEndOf="@+id/AssetAmountTV"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.208" />
+        app:layout_constraintVertical_bias="0.208"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:backgroundTint="#FFFFFF"/>
 
     <TextView
         android:id="@+id/AssetAmountTV"
@@ -32,7 +36,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.205" />
+        app:layout_constraintVertical_bias="0.205"
+        android:textColor="#FFFFFF"/>
 
     <ImageView
         android:id="@+id/AssetLogo"
@@ -57,8 +62,11 @@
         android:hint="@string/EnterDollarAmount"
         android:inputType="numberDecimal"
         android:digits="$1234567890."
+        android:backgroundTint="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@+id/AssetAmountInput"
         app:layout_constraintHorizontal_bias="0.919"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
         app:layout_constraintStart_toStartOf="@+id/AssetAmountInput"
         app:layout_constraintTop_toBottomOf="@+id/AssetAmountInput" />
 
@@ -71,6 +79,9 @@
         android:hint="@string/EnterDollarAmount"
         android:inputType="numberDecimal"
         android:digits="$1234567890."
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:backgroundTint="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@+id/AssetInvestmentInput"
         app:layout_constraintStart_toStartOf="@+id/AssetInvestmentInput"
         app:layout_constraintTop_toBottomOf="@+id/AssetInvestmentInput" />
@@ -83,6 +94,7 @@
         android:text="@string/Investment"
         android:textSize="24sp"
         android:textStyle="bold"
+        android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@+id/AssetAmountTV"
         app:layout_constraintHorizontal_bias="0.19"
         app:layout_constraintStart_toStartOf="@+id/AssetAmountTV"
@@ -96,6 +108,7 @@
         android:text="@string/FeesOptional"
         android:textSize="24sp"
         android:textStyle="bold"
+        android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="@+id/AssetInvestmentTV"
         app:layout_constraintHorizontal_bias="0.146"
         app:layout_constraintStart_toStartOf="@+id/AssetInvestmentTV"
@@ -107,6 +120,8 @@
         android:layout_height="58dp"
         android:layout_marginTop="612dp"
         android:text="@string/AddCoinToPortfolio"
+        android:textColor="#FFFFFF"
+        android:background="#292929"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.493"
