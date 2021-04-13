@@ -109,12 +109,13 @@
 
         <TextView
             android:id="@+id/textView"
-            android:layout_width="91dp"
-            android:layout_height="37dp"
+            android:layout_width="131dp"
+            android:layout_height="46dp"
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:text="Total Investment: "
             android:textColor="#ffffff"
+            android:textSize="17sp"
             app:layout_constraintBottom_toTopOf="@+id/homeRV"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -130,6 +131,7 @@
             android:layout_marginRight="16dp"
             android:text="$1000.00"
             android:textColor="#ffffff"
+            android:textSize="17sp"
             app:layout_constraintBottom_toTopOf="@+id/homeRV"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"

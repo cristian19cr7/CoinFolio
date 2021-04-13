@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.DragAndDropPermissions;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,6 +48,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -66,6 +68,7 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
     private List<PortfolioAsset> coin_portfolio = new ArrayList<>();
     private PortfolioAsset investment_item;
     private PortfolioAdapter portfolioAdapter= new PortfolioAdapter(coin_portfolio, this, getContext());
+    private List<List<Float>> coin_data = new ArrayList<>();
     RequestQueue queue;
     ProgressBar progressBar;
     TextView totalInvestmentTV;
@@ -98,7 +101,8 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
                         getSparkData(url, urlContinue, "7", new VolleyCallback() {
                             @Override
                             public void OnSuccess(int i, float[] portfolioArr) {
-                                drawSpark(null, portfolioArr);
+                                completeAllcoinData();
+                                //drawSpark(null, portfolioArr);
                                 Toast.makeText(getContext(), String.valueOf(i), Toast.LENGTH_SHORT).show();
                             }}, 0, null);
 
@@ -109,7 +113,8 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
                         getSparkData(url, urlContinue, "30", new VolleyCallback() {
                             @Override
                             public void OnSuccess(int i,float[] portfolioArr) {
-                                drawSpark(null,portfolioArr);
+                                completeAllcoinData();
+                                //drawSpark(null,portfolioArr);
                                 Toast.makeText(getContext(), String.valueOf(i), Toast.LENGTH_SHORT).show();
                             }},0,null);
                         //Toast.makeText(getContext(), radioButton.getText(), Toast.LENGTH_SHORT).show();
@@ -119,7 +124,8 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
                         getSparkData(url, urlContinue, "1", new VolleyCallback() {
                             @Override
                             public void OnSuccess(int i, float[] portfolioArr) {
-                                drawSpark(null,portfolioArr);
+                                completeAllcoinData();
+                                //drawSpark(null,portfolioArr);
                                 Toast.makeText(getContext(), String.valueOf(i), Toast.LENGTH_SHORT).show();
                             }},0,null);
                         //Toast.makeText(getContext(), radioButton.getText(), Toast.LENGTH_SHORT).show();
@@ -152,6 +158,39 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
 //        });
 
         return view;
+    }
+
+    public void completeAllcoinData()
+    {
+        int smallest = coin_data.get(0).size();
+        for (int i = 0; i < coin_data.size(); i++)
+        {
+            if(coin_data.get(i).size() < smallest) {
+                smallest = coin_data.get(i).size();
+            }
+        }
+        float[] finalCoinData = new float[smallest];
+        Arrays.fill(finalCoinData, 0.0f);
+        for (int i = 0; i < coin_data.size(); i++) {
+            if (coin_data.get(i).size() == smallest)
+            {
+                for (int j = 0; j < coin_data.get(i).size(); j++) {
+                    finalCoinData[j] += coin_data.get(i).get(j);
+                }
+            }
+            else
+            {
+                int diff = coin_data.get(i).size()- smallest;
+                for (int j = diff; j < coin_data.get(i).size(); j++) {
+                    finalCoinData[j-diff] += coin_data.get(i).get(j);
+                }
+            }
+
+        }
+
+        coin_data.clear();
+        drawSpark(null, finalCoinData);
+
     }
 
     public void setPortfolioRV(View v)
@@ -210,12 +249,14 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
                             JSONObject jsonObject = new JSONObject(response);
                             JSONArray array = jsonObject.getJSONArray("prices");
                             float []data;
+                            List<Float> coindata = new ArrayList<>();
                             if(dataArr == null)
                             {
                                data = new float[array.length()];
                                 for (int j = 0; j < array.length(); j++) {
                                     JSONArray arraytemp = array.getJSONArray(j);
                                     data[j] = (float) arraytemp.getDouble(1)* current.getAmountofAsset().floatValue();
+                                    coindata.add((float) arraytemp.getDouble(1)* current.getAmountofAsset().floatValue());
 
                                 }
                                 Log.d(TAG, "onResponse: null "+ array.length());
@@ -227,6 +268,7 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
                                     for (int j = 0; j < array.length(); j++) {
                                         JSONArray arraytemp = array.getJSONArray(j);
                                         dataArr[j] = dataArr[j] + (float) arraytemp.getDouble(1)* current.getAmountofAsset().floatValue();
+                                        coindata.add((float) arraytemp.getDouble(1)* current.getAmountofAsset().floatValue());
                                     }
                                 }
                                 else
@@ -234,12 +276,13 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
                                     for (int j = 0; j < dataArr.length; j++) {
                                         JSONArray arraytemp = array.getJSONArray(j);
                                         dataArr[j] = dataArr[j] + (float) arraytemp.getDouble(1)* current.getAmountofAsset().floatValue();
+                                        coindata.add((float) arraytemp.getDouble(1)* current.getAmountofAsset().floatValue());
                                     }
                                 }
                                 data = dataArr;
                                 Log.d(TAG, "onResponse: not null "+ array.length());
                             }
-
+                            coin_data.add(coindata);
                             getSparkData(URLfirst, URLend, timeframe, callback, next, data);
                             //textView.setText(String.format("$%.2f",btcdata[array.length()-1]));
                         } catch (JSONException e) {
@@ -272,7 +315,7 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
                     if(Asset.getNameofAseet().equals("investment"))
                     {
                         investment_item = Asset;
-                        totalInvestmentTV.setText(investment_item.getAmountofAsset().toString());
+                        totalInvestmentTV.setText(String.format("$%.2f", investment_item.getAmountofAsset()));
                     }
                     else
                     {
