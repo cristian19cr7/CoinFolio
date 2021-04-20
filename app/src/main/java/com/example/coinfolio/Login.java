@@ -1,14 +1,19 @@
 package com.example.coinfolio;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -18,6 +23,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -35,6 +42,7 @@ public class Login extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     SignInButton signInButton;
     EditText email_input, password_input;
+    TextView forgot_password;
     private static final String TAaG = "MainActivity";
 
     @Override
@@ -47,17 +55,16 @@ public class Login extends AppCompatActivity {
         signUpbtn = findViewById(R.id.create_account_btn);
         email_input = findViewById(R.id.email_signin_input);
         password_input = findViewById(R.id.password_signin_input);
+        forgot_password = findViewById(R.id.forgotPasswordTV);
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         Request();
-
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 signIn();
             }
         });
-
         signOutBtn = findViewById(R.id.signin);
         signOutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,6 +87,58 @@ public class Login extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
+        forgot_password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final EditText resetEmail = new EditText(getApplicationContext());
+                final AlertDialog.Builder resetDialog = new AlertDialog.Builder(Login.this, R.style.Theme_MaterialComponents_Light_DarkActionBar_Bridge);
+
+                resetDialog.setTitle("Reset Password");
+                resetDialog.setMessage("Enter Email.\nWe Will Send A Password Reset Link To This Email.");
+                resetDialog.setView(resetEmail);
+
+                resetDialog.setPositiveButton("Send", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(TextUtils.isEmpty(resetEmail.getText()))
+                        {
+                            Toast.makeText(getApplicationContext(), "No Email Address Entered", Toast.LENGTH_LONG).show();
+                        }
+                        else
+                        {
+                            String mail = resetEmail.getText().toString();
+                            mAuth.sendPasswordResetEmail(mail).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Toast.makeText(getApplicationContext(), "Sent Password Reset Link To Email.", Toast.LENGTH_SHORT).show();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(getApplicationContext(), "Couldn't Send Link To Email", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+
+                    }
+                });
+
+                resetDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+                resetDialog.show();
+
+
+            }
+        });
+
+
     }
 
     public void EmailPasswordSignin(String email, String password, FirebaseAuth a)

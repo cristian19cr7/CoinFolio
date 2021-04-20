@@ -41,7 +41,7 @@ public class RemoveCoinAssetInfo extends AppCompatActivity {
         removeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                removeFromPortfolio(asset.getNameofAseet(), Double.parseDouble(InputAmountSold.getText().toString()));
+                removeFromPortfolio(asset.getNameofAseet(), Double.parseDouble(InputAmountSold.getText().toString()), Double.parseDouble(InputSellPrice.getText().toString()));
                 Intent intent = new Intent(getApplicationContext(), AddingCoinsComplete.class);
                 startActivity(intent);
                 finish();
@@ -50,7 +50,7 @@ public class RemoveCoinAssetInfo extends AppCompatActivity {
 
     }
 
-    public void removeFromPortfolio(final String assetName, final Double amount)
+    public void removeFromPortfolio(final String assetName, final Double amount, final Double sellPrice)
     {
         FirebaseDatabase start = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = start.getReference().child(user.getUuid()).child("Portfolio");
@@ -64,8 +64,23 @@ public class RemoveCoinAssetInfo extends AppCompatActivity {
                     {
                         PortfolioAsset portfolioAsset = dataSnapshot.getValue(PortfolioAsset.class);
                         portfolioAsset.removeAmount(amount);
-                        myRef.child(assetName).setValue(portfolioAsset);
+                        if(portfolioAsset.getAmountofAsset() == 0.0)
+                        {
+                            myRef.child(assetName).removeValue();
+                        }
+                        else
+                        {
+                            myRef.child(assetName).setValue(portfolioAsset);
+                        }
 
+
+                    }
+                    else if(dataSnapshot.getKey().equals("profit"))
+                    {
+                        PortfolioAsset profits = dataSnapshot.getValue(PortfolioAsset.class);
+                        Double realized_profits = amount * sellPrice;
+                        profits.updateAmount(realized_profits);
+                        myRef.child("profit").setValue(profits);
                     }
                 }
 

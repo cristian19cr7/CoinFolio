@@ -71,10 +71,11 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
     private List<List<Float>> coin_data = new ArrayList<>();
     RequestQueue queue;
     ProgressBar progressBar;
-    TextView totalInvestmentTV;
+    TextView totalInvestmentTV, totalProfitsTV;
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_home,container,false);
         totalInvestmentTV = view.findViewById(R.id.textView2);
+        totalProfitsTV = view.findViewById(R.id.profitsTV);
         textView = view.findViewById(R.id.text_home);
         sparkView = view.findViewById(R.id.sparkview);
         group = view.findViewById(R.id.radioGroup);
@@ -98,37 +99,62 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
                 switch (temp) {
                     case "Week":
                         progressBar.setVisibility(View.VISIBLE);
-                        getSparkData(url, urlContinue, "7", new VolleyCallback() {
-                            @Override
-                            public void OnSuccess(int i, float[] portfolioArr) {
-                                completeAllcoinData();
-                                //drawSpark(null, portfolioArr);
-                                Toast.makeText(getContext(), String.valueOf(i), Toast.LENGTH_SHORT).show();
-                            }}, 0, null);
+                        if(coin_portfolio.size() == 0)
+                        {
+                            float[] emptyPortfolio = new float[100];
+                            Arrays.fill(emptyPortfolio, 0.0f);
+                            drawSpark(null, emptyPortfolio);
+                        }
+                        else
+                        {
+                            getSparkData(url, urlContinue, "7", new VolleyCallback() {
+                                @Override
+                                public void OnSuccess(int i, float[] portfolioArr) {
+                                    completeAllcoinData();
+                                    //drawSpark(null, portfolioArr);
+                                    Toast.makeText(getContext(), String.valueOf(i), Toast.LENGTH_SHORT).show();
+                                }}, 0, null);
+                        }
 
-                        //Toast.makeText(getContext(), radioButton.getText(), Toast.LENGTH_SHORT).show();
                         break;
                     case "Month":
-                        progressBar.setVisibility(View.VISIBLE);
-                        getSparkData(url, urlContinue, "30", new VolleyCallback() {
-                            @Override
-                            public void OnSuccess(int i,float[] portfolioArr) {
-                                completeAllcoinData();
-                                //drawSpark(null,portfolioArr);
-                                Toast.makeText(getContext(), String.valueOf(i), Toast.LENGTH_SHORT).show();
-                            }},0,null);
-                        //Toast.makeText(getContext(), radioButton.getText(), Toast.LENGTH_SHORT).show();
+                        if(coin_portfolio.size() == 0)
+                        {
+                            float[] emptyPortfolio = new float[100];
+                            Arrays.fill(emptyPortfolio, 0.0f);
+                            drawSpark(null, emptyPortfolio);
+                        }
+                        else
+                        {
+                            progressBar.setVisibility(View.VISIBLE);
+                            getSparkData(url, urlContinue, "30", new VolleyCallback() {
+                                @Override
+                                public void OnSuccess(int i,float[] portfolioArr) {
+                                    completeAllcoinData();
+                                    //drawSpark(null,portfolioArr);
+                                    Toast.makeText(getContext(), String.valueOf(i), Toast.LENGTH_SHORT).show();
+                                }},0,null);
+                        }
+
                         break;
                     case "Day":
-                        progressBar.setVisibility(View.VISIBLE);
-                        getSparkData(url, urlContinue, "1", new VolleyCallback() {
-                            @Override
-                            public void OnSuccess(int i, float[] portfolioArr) {
-                                completeAllcoinData();
-                                //drawSpark(null,portfolioArr);
-                                Toast.makeText(getContext(), String.valueOf(i), Toast.LENGTH_SHORT).show();
-                            }},0,null);
-                        //Toast.makeText(getContext(), radioButton.getText(), Toast.LENGTH_SHORT).show();
+                        if(coin_portfolio.size() == 0)
+                        {
+                            float[] emptyPortfolio = new float[100];
+                            Arrays.fill(emptyPortfolio, 0.0f);
+                            drawSpark(null, emptyPortfolio);
+                        }
+                        else
+                        {
+                            progressBar.setVisibility(View.VISIBLE);
+                            getSparkData(url, urlContinue, "1", new VolleyCallback() {
+                                @Override
+                                public void OnSuccess(int i, float[] portfolioArr) {
+                                    completeAllcoinData();
+                                    //drawSpark(null,portfolioArr);
+                                    Toast.makeText(getContext(), String.valueOf(i), Toast.LENGTH_SHORT).show();
+                                }},0,null);
+                        }
                         break;
                 }
             }
@@ -316,6 +342,11 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
                     {
                         investment_item = Asset;
                         totalInvestmentTV.setText(String.format("$%.2f", investment_item.getAmountofAsset()));
+
+                    }
+                    else if(Asset.getNameofAseet().equals("profit"))
+                    {
+                        totalProfitsTV.setText(String.format("$%.2f", Asset.getAmountofAsset()));
                     }
                     else
                     {
@@ -345,7 +376,9 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
                 if(snapshot.getValue() == null)
                 {
                     PortfolioAsset defaultInvestment = new PortfolioAsset("investment","investment_id",0.001, 0.001);
+                    PortfolioAsset defaultProfits = new PortfolioAsset("profit", "profit_id", 0.0001, 0.001);
                     myRef.child("investment").setValue(defaultInvestment);
+                    myRef.child("profit").setValue(defaultProfits);
                 }
 
             }

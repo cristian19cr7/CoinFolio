@@ -56,7 +56,7 @@ public class RemoveCoinFragment extends Fragment implements PortfolioAdapter.Vie
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     PortfolioAsset Asset = postSnapshot.getValue(PortfolioAsset.class);
-                    if(!Asset.getNameofAseet().equals("investment"))
+                    if(!Asset.getNameofAseet().equals("investment") && !Asset.getNameofAseet().equals("profit"))
                         portfolio.add(Asset);
                 }
                 portfolioAdapter.notifyDataSetChanged();
