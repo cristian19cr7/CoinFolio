@@ -78,7 +78,6 @@ public class RemoveCoinFragment extends Fragment implements PortfolioAdapter.Vie
     @Override
     public void AssetClicked(int position)
     {
-//        Toast.makeText(getContext(),portfolio.get(position).getNameofAseet().toString(), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getContext(), RemoveCoinAssetInfo.class);
         intent.putExtra("portfolioAsset", portfolio.get(position));
         startActivity(intent);

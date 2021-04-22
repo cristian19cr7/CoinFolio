@@ -82,18 +82,6 @@ public class AddAssetInfo extends AppCompatActivity {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-//                if(snapshot.child(newTransaction.getAssetID()).exists())
-//                {
-//                    PortfolioAsset portfolioAsset = snapshot.getValue(PortfolioAsset.class);
-//                    portfolioAsset.updateAmount(newTransaction.getAssetAmount());
-//                    myRef.child(newTransaction.getAssetID()).setValue(portfolioAsset);
-//                }
-//                else
-//                {
-//                    PortfolioAsset newAsset = new PortfolioAsset(newTransaction.getAssetName(), newTransaction.getAssetAmount());
-//                    myRef.child(newTransaction.getAssetID()).setValue(newAsset);
-//                }
                 boolean AssetDoesExistInTheDatabase = false;
                 for(DataSnapshot dataSnapshot:snapshot.getChildren())
                 {
@@ -119,28 +107,6 @@ public class AddAssetInfo extends AppCompatActivity {
                     myRef.child(newTransaction.getAssetName()).setValue(newAsset);
                 }
 
-//                HashMap<String, Double> data1 = (HashMap<String, Double>)snapshot.getValue();
-//                if(data1.containsKey(newTransaction.getAssetID()))
-//                {
-//                    HashMap<String, HashMap<String, Double>> data = (HashMap<String, HashMap<String, Double>>)snapshot.getValue();
-//                    HashMap<String, Double> amount = data.get(newTransaction.getAssetName());
-//                    HashMap<String, Double> invest = data.get("investment");
-//                    Double new_amount = BigDecimal.valueOf(amount.get(newTransaction.getAssetName()) + newTransaction.getAssetAmount()).setScale(9, RoundingMode.HALF_UP).doubleValue();
-//                    Double new_investment = invest.get("investment")+ newTransaction.getInvestmentAmount();
-//                    data.put(newTransaction.getAssetID(), amount);
-//                    data.put("investment", invest);
-//                    myRef.setValue(data);
-//                }
-//                else
-//                {
-//                    Double new_investment = data1.get("investment")+ newTransaction.getInvestmentAmount();
-//                    Double scaledAmount = BigDecimal.valueOf(newTransaction.assetAmount+ 0.000000001).setScale(9, RoundingMode.HALF_UP).doubleValue();
-//                    data1.put(newTransaction.getAssetID(),scaledAmount);
-//                    data1.put("investment", new_investment);
-//                    myRef.setValue(data1);
-//                }
-//                //myRef.setValue(data);
-
             }
 
             @Override
@@ -149,24 +115,6 @@ public class AddAssetInfo extends AppCompatActivity {
             }
         });
 
-//        final DatabaseReference investmentRef = start.getReference().child(mUser.getUuid()).child("Portfolio").child("investment");
-//        investmentRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                if(snapshot.exists())
-//                {
-//                    PortfolioAsset investmentAsset = snapshot.getValue(PortfolioAsset.class);
-//                    investmentAsset.updateAmount(newTransaction.getInvestmentAmount());
-//                    myRef.setValue(investmentAsset);
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
     }
 
 }

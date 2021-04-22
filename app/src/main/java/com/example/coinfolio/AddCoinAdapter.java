@@ -51,11 +51,7 @@ public class AddCoinAdapter extends RecyclerView.Adapter<AddCoinAdapter.ViewHold
             filterResults.values = templist;
             return filterResults;
         }
-//
-//        public List<Coin> getLocalDataSetFull() {
-//            Collections.copy(localDataSet,localDataSetFull);
-//            return localDataSetFull;
-//        }
+
         @Override
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
             localDataSet.clear();

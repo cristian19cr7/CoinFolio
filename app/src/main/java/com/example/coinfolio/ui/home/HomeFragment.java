@@ -112,7 +112,6 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
                                 public void OnSuccess(int i, float[] portfolioArr) {
                                     completeAllcoinData();
                                     //drawSpark(null, portfolioArr);
-                                    Toast.makeText(getContext(), String.valueOf(i), Toast.LENGTH_SHORT).show();
                                 }}, 0, null);
                         }
 
@@ -132,7 +131,6 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
                                 public void OnSuccess(int i,float[] portfolioArr) {
                                     completeAllcoinData();
                                     //drawSpark(null,portfolioArr);
-                                    Toast.makeText(getContext(), String.valueOf(i), Toast.LENGTH_SHORT).show();
                                 }},0,null);
                         }
 
@@ -152,36 +150,12 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
                                 public void OnSuccess(int i, float[] portfolioArr) {
                                     completeAllcoinData();
                                     //drawSpark(null,portfolioArr);
-                                    Toast.makeText(getContext(), String.valueOf(i), Toast.LENGTH_SHORT).show();
                                 }},0,null);
                         }
                         break;
                 }
             }
         });
-
-//        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-//        final DatabaseReference ref = database.getReference("/"+uID+"/transaction/");
-//        ref.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                for(DataSnapshot postSnapshot : dataSnapshot.getChildren())
-//                {
-//                    transaction post = new transaction(Double.parseDouble(postSnapshot.child("assetAmount").getValue().toString())
-//                            ,Double.parseDouble(postSnapshot.child("investmentAmount").getValue().toString())
-//                            ,postSnapshot.child("assetName").getValue().toString()
-//                            ,postSnapshot.child("assetID").getValue().toString());
-//                    portfolio.add(post);
-//                    Log.d("asset", post.getAssetName());
-//                }
-//                Log.d("done", "portfolio is done loading in");
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                System.out.println("The read failed: " + databaseError.getCode());
-//            }
-//        });
 
         return view;
     }
