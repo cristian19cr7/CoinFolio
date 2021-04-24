@@ -20,7 +20,7 @@
             android:textColor="#FFFFFF"
             android:textSize="30sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/sparkview"
+            app:layout_constraintBottom_toTopOf="@+id/charts_spark"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.055"
             app:layout_constraintStart_toStartOf="parent"
@@ -29,7 +29,7 @@
             tools:ignore="RtlCompat" />
 
         <com.robinhood.spark.SparkView
-            android:id="@+id/sparkview"
+            android:id="@+id/charts_spark"
             android:layout_width="381dp"
             android:layout_height="234dp"
             android:layout_marginTop="40dp"
@@ -47,7 +47,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sparkview">
+            app:layout_constraintTop_toBottomOf="@+id/charts_spark">
 
             <RadioButton
                 android:id="@+id/radioButton"
@@ -104,10 +104,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toTopOf="@+id/radioGroup"
-            app:layout_constraintEnd_toEndOf="@+id/sparkview"
+            app:layout_constraintEnd_toEndOf="@+id/charts_spark"
             app:layout_constraintHorizontal_bias="0.501"
-            app:layout_constraintStart_toStartOf="@+id/sparkview"
-            app:layout_constraintTop_toTopOf="@+id/sparkview"
+            app:layout_constraintStart_toStartOf="@+id/charts_spark"
+            app:layout_constraintTop_toTopOf="@+id/charts_spark"
             app:layout_constraintVertical_bias="0.388" />
 
         <TextView
@@ -179,7 +179,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="24sp"
-            app:layout_constraintBottom_toTopOf="@+id/sparkview"
+            app:layout_constraintBottom_toTopOf="@+id/charts_spark"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.1"
             app:layout_constraintStart_toEndOf="@+id/text_home"

@@ -2,6 +2,7 @@ package com.example.coinfolio.ui.Explore;
 
 import androidx.lifecycle.ViewModelProviders;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,9 +12,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -25,6 +30,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.coinfolio.AddCoinAdapter;
 import com.example.coinfolio.Coin;
 import com.example.coinfolio.R;
+import com.example.coinfolio.ui.Addcoins.AddAssetInfo;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,7 +47,7 @@ public class nav_explore extends Fragment implements AddCoinAdapter.ViewHolder.A
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.nav_explore_fragment, container, false);
         setHasOptionsMenu(true);
-        getListOfCoins(1,1);
+        getListOfCoins(1,2);
         RV(view);
 
         return view;
@@ -104,10 +110,32 @@ public class nav_explore extends Fragment implements AddCoinAdapter.ViewHolder.A
 
     }
 
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        getActivity().getMenuInflater().inflate(R.menu.searchmenu, menu);
+        MenuItem menuItem = menu.findItem(R.id.search_menu);
+        SearchView searchView = (SearchView) menuItem.getActionView();
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                addCoinAdapter.getFilter().filter(s);
+                return false;
+            }
+        });
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
     @Override
     public void OnAssetSelected(int position) {
-        Toast.makeText(getContext(), "Click works", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getContext(), coin_market_data_chart.class);
+        intent.putExtra("coin_id", list.get(position).coin_ID);
+        startActivity(intent);
     }
 }
