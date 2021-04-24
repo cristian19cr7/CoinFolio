@@ -1,5 +1,6 @@
 package com.example.coinfolio.ui.home;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.DragAndDropPermissions;
@@ -71,7 +72,7 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
     private List<List<Float>> coin_data = new ArrayList<>();
     RequestQueue queue;
     ProgressBar progressBar;
-    TextView totalInvestmentTV, totalProfitsTV;
+    TextView totalInvestmentTV, totalProfitsTV, portfolioPercentage;
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_home,container,false);
         totalInvestmentTV = view.findViewById(R.id.textView2);
@@ -80,6 +81,7 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
         sparkView = view.findViewById(R.id.sparkview);
         group = view.findViewById(R.id.radioGroup);
         progressBar = view.findViewById(R.id.progressBarHome);
+        portfolioPercentage = view.findViewById(R.id.portfolio_percentage);
         progressBar.setVisibility(View.INVISIBLE);
         queue = VolleySingleton.getInstance(getContext()).getRequestQueue();
         final String timeframeData = "1";
@@ -208,16 +210,37 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
             Toast.makeText(getContext(),"error with the volley chart data", Toast.LENGTH_SHORT).show();
         else{
             //portfolio();
+            final int lastIndex = sparkArr.length-1;
+            final Float percentage = ((sparkArr[lastIndex]-sparkArr[0])  / sparkArr[0] ) * 100;
             sparkView.setAdapter(new SparkAdapter(sparkArr));
             sparkView.setScrubEnabled(true);
             sparkView.setScrubListener(new SparkView.OnScrubListener() {
                 @Override
                 public void onScrubbed(Object value) {
                     if (value == null) {
-                        int lastIndex = sparkArr.length-1;
                         textView.setText(String.format("$%.2f",sparkArr[lastIndex]),true);
+                        portfolioPercentage.setText(String.format("%.2f", percentage)+"%");
+                        if(percentage < 0.0)
+                        {
+                            portfolioPercentage.setTextColor(Color.RED);
+                        }
+                        else
+                        {
+                            portfolioPercentage.setTextColor(Color.GREEN);
+                        }
+
                     } else {
+                        Double percentageScrub = ((Double.parseDouble(value.toString())-sparkArr[0])/sparkArr[0])*100;
                         textView.setText(String.format("$%.2f",value),true);
+                        portfolioPercentage.setText(String.format("%.2f", percentageScrub)+"%");
+                        if(percentageScrub < 0.0)
+                        {
+                            portfolioPercentage.setTextColor(Color.RED);
+                        }
+                        else
+                        {
+                            portfolioPercentage.setTextColor(Color.GREEN);
+                        }
                     }
                 }
             });
@@ -225,6 +248,15 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
             sparkView.setPadding(20,20,20,0);
             sparkView.setLineWidth(6.5f);
             textView.setText(String.format("$%.2f",sparkArr[sparkArr.length-1]),true);
+            portfolioPercentage.setText(String.format("%.2f", percentage)+"%");
+            if(percentage < 0.0)
+            {
+                portfolioPercentage.setTextColor(Color.RED);
+            }
+            else
+            {
+                portfolioPercentage.setTextColor(Color.GREEN);
+            }
             progressBar.setVisibility(View.INVISIBLE);
         }
 
