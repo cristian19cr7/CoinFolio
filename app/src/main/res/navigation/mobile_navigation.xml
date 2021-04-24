@@ -29,4 +29,9 @@
         android:name="com.example.coinfolio.ui.RemoveCoin.RemoveCoinFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_remove_coins" />
+    <fragment
+        android:id="@+id/nav_explore"
+        android:name="com.example.coinfolio.ui.Explore.nav_explore"
+        android:label="nav_explore_fragment"
+        tools:layout="@layout/nav_explore_fragment" />
 </navigation>
