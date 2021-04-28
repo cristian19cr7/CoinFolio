@@ -58,59 +58,50 @@ public class AddCoinsFragment extends Fragment implements AddCoinAdapter.ViewHol
             final View view = inflater.inflate(R.layout.fragment_add_coins, container, false);
             setHasOptionsMenu(true);
             progressBar = view.findViewById(R.id.progressbar);
-            getListOfCoins(1, 2);
+            getListOfCoins();
             RV(view);
             return view;
     }
 
 
-    public void getListOfCoins(final int curr_page, final int end_page)
+    public void getListOfCoins()
     {
-        if(curr_page > end_page)
-        {
-            return;
-        }
-        else
-        {
-            String URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page="+curr_page+"&sparkline=false";
-            RequestQueue queue = Volley.newRequestQueue(getContext());
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            // Display the first 500 characters of the response string.
-                            try {
-                                JSONArray array = new JSONArray(response);
-                                for (int i = 0; i < array.length(); i++) {
-                                    JSONObject temp = array.getJSONObject(i);
-                                    Coin tempCoin = new Coin();
-                                    tempCoin.name = temp.getString("name");
-                                    tempCoin.coin_ID = temp.getString("id");
-                                    tempCoin.imageURL = temp.getString("image");
-                                    tempCoin.market_cap_rank = temp.getInt("market_cap_rank");
-                                    tempCoin.symbol = temp.getString("symbol");
-                                    tempCoin.current_price = temp.getDouble("current_price");
-                                    tempCoin.price_change_percentage_24h = temp.getDouble("price_change_percentage_24h");
-                                    list.add(tempCoin);
-                                }
-                                addCoinAdapter.notifyDataSetChanged();
-                                progressBar.setVisibility(View.INVISIBLE);
-                                int next = curr_page+1;
-                                getListOfCoins(next, end_page);
-                                Toast.makeText(getContext(),"Loading Currencies",Toast.LENGTH_SHORT).show();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+        String URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false";
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        try {
+                            JSONArray array = new JSONArray(response);
+                            for (int i = 0; i < array.length(); i++) {
+                                JSONObject temp = array.getJSONObject(i);
+                                Coin tempCoin = new Coin();
+                                tempCoin.name = temp.getString("name");
+                                tempCoin.coin_ID = temp.getString("id");
+                                tempCoin.imageURL = temp.getString("image");
+                                tempCoin.market_cap_rank = temp.getInt("market_cap_rank");
+                                tempCoin.symbol = temp.getString("symbol");
+                                tempCoin.current_price = temp.getDouble("current_price");
+                                tempCoin.price_change_percentage_24h = temp.getDouble("price_change_percentage_24h");
+                                list.add(tempCoin);
                             }
+                            addCoinAdapter.notifyDataSetChanged();
+                            progressBar.setVisibility(View.INVISIBLE);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getContext(),"Error getting the coin lists",Toast.LENGTH_SHORT).show();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getContext(),"Error getting the coin lists",Toast.LENGTH_SHORT).show();
 
-                }
-            });
-            queue.add(stringRequest);
-        }
+            }
+        });
+        queue.add(stringRequest);
+
 
     }
     

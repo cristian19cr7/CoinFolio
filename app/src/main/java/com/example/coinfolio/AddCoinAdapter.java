@@ -31,7 +31,7 @@ public class AddCoinAdapter extends RecyclerView.Adapter<AddCoinAdapter.ViewHold
     private Filter FilterCoins = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence charSequence) {
-            if(localDataSet.size()== 500)
+            if(localDataSet.size()== 250)
             {
                 localDataSetFull = new ArrayList<>(localDataSet);
             }

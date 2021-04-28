@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -30,6 +32,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.coinfolio.AddCoinAdapter;
 import com.example.coinfolio.Coin;
 import com.example.coinfolio.R;
+import com.example.coinfolio.VolleyCallback;
 import com.example.coinfolio.ui.Addcoins.AddAssetInfo;
 
 import org.json.JSONArray;
@@ -37,7 +40,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+
+import static com.android.volley.VolleyLog.TAG;
 
 public class nav_explore extends Fragment implements AddCoinAdapter.ViewHolder.AssetSelectedListener{
     private List<Coin> list = new ArrayList<>();
@@ -46,9 +53,12 @@ public class nav_explore extends Fragment implements AddCoinAdapter.ViewHolder.A
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.nav_explore_fragment, container, false);
+
+
         setHasOptionsMenu(true);
-        getListOfCoins(1,2);
+        getListOfCoins();
         RV(view);
+
 
         return view;
     }
@@ -58,57 +68,52 @@ public class nav_explore extends Fragment implements AddCoinAdapter.ViewHolder.A
         recyclerView.setAdapter(addCoinAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         addCoinAdapter.notifyDataSetChanged();
+
     }
 
-    public void getListOfCoins(final int curr_page, final int end_page)
+    public void getListOfCoins()
     {
-        if(curr_page > end_page)
-        {
-            return;
-        }
-        else
-        {
-            String URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page="+curr_page+"&sparkline=false";
-            RequestQueue queue = Volley.newRequestQueue(getContext());
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            // Display the first 500 characters of the response string.
-                            try {
-                                JSONArray array = new JSONArray(response);
-                                for (int i = 0; i < array.length(); i++) {
-                                    JSONObject temp = array.getJSONObject(i);
-                                    Coin tempCoin = new Coin();
-                                    tempCoin.name = temp.getString("name");
-                                    tempCoin.coin_ID = temp.getString("id");
-                                    tempCoin.imageURL = temp.getString("image");
-                                    tempCoin.market_cap_rank = temp.getInt("market_cap_rank");
-                                    tempCoin.symbol = temp.getString("symbol");
-                                    tempCoin.current_price = temp.getDouble("current_price");
-                                    tempCoin.price_change_percentage_24h = temp.getDouble("price_change_percentage_24h");
-                                    list.add(tempCoin);
-                                }
-                                addCoinAdapter.notifyDataSetChanged();
-                                //progressBar.setVisibility(View.INVISIBLE);
-                                int next = curr_page+1;
-                                getListOfCoins(next, end_page);
-                                Toast.makeText(getContext(),"Loading Currencies",Toast.LENGTH_SHORT).show();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+        String URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false";
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        try {
+                            JSONArray array = new JSONArray(response);
+                            for (int i = 0; i < array.length(); i++) {
+                                JSONObject temp = array.getJSONObject(i);
+                                Coin tempCoin = new Coin();
+                                tempCoin.name = temp.getString("name");
+                                tempCoin.coin_ID = temp.getString("id");
+                                tempCoin.imageURL = temp.getString("image");
+                                tempCoin.market_cap_rank = temp.getInt("market_cap_rank");
+                                tempCoin.symbol = temp.getString("symbol");
+                                tempCoin.current_price = temp.getDouble("current_price");
+                                tempCoin.price_change_percentage_24h = temp.getDouble("price_change_percentage_24h");
+                                list.add(tempCoin);
                             }
+                            addCoinAdapter.notifyDataSetChanged();
+                            //progressBar.setVisibility(View.INVISIBLE);
+                            Toast.makeText(getContext(),"Loading Currencies",Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getContext(),"Error getting the coin lists",Toast.LENGTH_SHORT).show();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getContext(),"Error getting the coin lists",Toast.LENGTH_SHORT).show();
 
-                }
-            });
-            queue.add(stringRequest);
-        }
+            }
+        });
+        queue.add(stringRequest);
+
 
     }
+
+
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
