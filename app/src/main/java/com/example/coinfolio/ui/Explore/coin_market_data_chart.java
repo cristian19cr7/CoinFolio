@@ -69,12 +69,15 @@ public class coin_market_data_chart extends AppCompatActivity {
                 switch (temp)
                 {
                     case "Day":
+                        loadingSparkLine.setVisibility(View.VISIBLE);
                         getSparklineData(asset, 1);
                         break;
                     case "Week":
+                        loadingSparkLine.setVisibility(View.VISIBLE);
                         getSparklineData(asset, 7);
                         break;
                     case "Month":
+                        loadingSparkLine.setVisibility(View.VISIBLE);
                         getSparklineData(asset, 30);
                         break;
 

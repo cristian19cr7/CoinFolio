@@ -96,7 +96,6 @@ public class nav_explore extends Fragment implements AddCoinAdapter.ViewHolder.A
                             }
                             addCoinAdapter.notifyDataSetChanged();
                             //progressBar.setVisibility(View.INVISIBLE);
-                            Toast.makeText(getContext(),"Loading Currencies",Toast.LENGTH_SHORT).show();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

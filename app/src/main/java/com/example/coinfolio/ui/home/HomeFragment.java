@@ -66,6 +66,9 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
     RequestQueue queue;
     ProgressBar progressBar;
     TextView totalInvestmentTV, totalProfitsTV, portfolioPercentage;
+    final String timeframeData = "1";
+    final String url = "https://api.coingecko.com/api/v3/coins/";
+    final String urlContinue = "/market_chart?vs_currency=usd&days=";
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_home,container,false);
         totalInvestmentTV = view.findViewById(R.id.textView2);
@@ -77,10 +80,8 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
         portfolioPercentage = view.findViewById(R.id.portfolio_percentage);
         progressBar.setVisibility(View.INVISIBLE);
         queue = VolleySingleton.getInstance(getContext()).getRequestQueue();
-        final String timeframeData = "1";
-        final String url = "https://api.coingecko.com/api/v3/coins/";
-        final String urlContinue = "/market_chart?vs_currency=usd&days=";
-        getPortfolio();
+
+//        getPortfolio();
         setPortfolioRV(view);
         textView.setCharacterLists(TickerUtils.provideNumberList());
         textView.setAnimationDuration(400);
@@ -387,6 +388,7 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
 
             }
         });
+        getPortfolio();
 
     }
 
