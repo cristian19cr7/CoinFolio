@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:layout_marginLeft="7dp"
+    android:layout_marginRight="7dp"
+    android:background="@drawable/asset_transaction_style">
+    <TextView
+        android:id="@+id/asset_transaction_investmentTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:text="$100.00"
+        android:textSize="18sp"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="25dp"
+        android:layout_gravity="left"/>
+    <TextView
+        android:id="@+id/asset_transaction_nameTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:text="in Bitcoin"
+        android:textSize="15sp"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="30dp"
+        android:layout_gravity="left"/>
+    <TextView
+        android:id="@+id/asset_transaction_amountTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:text="+ 0.123123"
+        android:textSize="18dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginRight="30dp"
+        android:layout_gravity="right"/>
+    <TextView
+        android:id="@+id/asset_transaction_boughtPriceTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:text="~$44,123.12"
+        android:textSize="15dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="30dp"
+        android:layout_gravity="right"/>
+</FrameLayout>

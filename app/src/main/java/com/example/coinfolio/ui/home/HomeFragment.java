@@ -1,5 +1,6 @@
 package com.example.coinfolio.ui.home;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,6 +32,7 @@ import com.example.coinfolio.SparkAdapter;
 import com.example.coinfolio.User;
 import com.example.coinfolio.VolleyCallback;
 import com.example.coinfolio.VolleySingleton;
+import com.example.coinfolio.ui.Addcoins.AddAssetInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -331,6 +334,8 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
 
     public void getPortfolio()
     {
+        if(!coin_portfolio.isEmpty())
+            coin_portfolio.clear();
         FirebaseDatabase start = FirebaseDatabase.getInstance();
         DatabaseReference myRef = start.getReference().child(currentUser.getUuid()).child("Portfolio");
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -395,8 +400,9 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
     @Override
     public void AssetClicked(int position) {
         Toast.makeText(getContext(),coin_portfolio.get(position).getNameofAseet(), Toast.LENGTH_SHORT).show();
-
-
+        Intent intent = new Intent(getContext(), assetTransaction.class);
+        intent.putExtra("assetName", coin_portfolio.get(position).getNameofAseet());
+        startActivity(intent);
     }
 
 }

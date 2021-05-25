@@ -103,20 +103,46 @@ public class coin_market_data_chart extends AppCompatActivity {
                     {
                         priceScrub.setText(String.format("$%.2f", price_scrub));
                     }
+                    else if(price_scrub < 0.0001)
+                    {
+                        priceScrub.setText(String.format("$%.8f", price_scrub));
+                    }
                     else
                     {
                         priceScrub.setText(String.format("$%.5f", price_scrub));
                     }
+
                 }
                 else
                 {
-                    priceScrub.setText(String.format("$%.2f", coinSparkData[current_price]));
+                    if(coinSparkData[current_price] > 2.01)
+                    {
+                        priceScrub.setText(String.format("$%.2f", coinSparkData[current_price]));
+                    }
+                    else if(coinSparkData[current_price] < 0.0001)
+                    {
+                        priceScrub.setText(String.format("$%.8f", coinSparkData[current_price]));
+                    }
+                    else {
+                        priceScrub.setText(String.format("$%.5f", coinSparkData[current_price]));
+                    }
                 }
 
 
             }
         });
-        priceScrub.setText(String.format("$%.2f", coinSparkData[current_price]));
+        if(coinSparkData[current_price] > 2.01)
+        {
+            priceScrub.setText(String.format("$%.2f", coinSparkData[current_price]));
+        }
+        else if(coinSparkData[current_price] < 0.0001)
+        {
+            priceScrub.setText(String.format("$%.8f", coinSparkData[current_price]));
+        }
+        else
+        {
+            priceScrub.setText(String.format("$%.5f", coinSparkData[current_price]));
+        }
     }
 
     public void getSparklineData(final String coinID, int timeframe)
@@ -183,8 +209,27 @@ public class coin_market_data_chart extends AppCompatActivity {
                             Double ath_percent = market_data.getJSONObject("ath_change_percentage").getDouble("usd");
                             String coinName = jsonObject.getString("name");
                             String coinSymbol = jsonObject.getString("symbol");
-                            marketCapTV.setText(String.format("$%.2f", market_cap));
-                            tradingVolumeTV.setText(String.format("%.2f", trading_volume));
+                            if(market_cap > 1000000000.00 && market_cap < 1000000000000.00)
+                            {
+                                market_cap /= 1000000000.00;
+                                marketCapTV.setText(String.format("$%.2f Billion", market_cap));
+                            }
+                            else if(market_cap > 1000000.00 && market_cap < 1000000000.00)
+                            {
+                                market_cap /= 1000000.00;
+                                marketCapTV.setText(String.format("$%.2f Million", market_cap));
+                            }
+
+                            if(trading_volume > 1000000000.00 && trading_volume < 1000000000000.00)
+                            {
+                                trading_volume /= 1000000000.00;
+                                tradingVolumeTV.setText(String.format("$%.2f Billion", trading_volume));
+                            }
+                            else if(trading_volume > 1000000.00 && trading_volume < 1000000000.00)
+                            {
+                                trading_volume /= 1000000.00;
+                                tradingVolumeTV.setText(String.format("$%.2f Million", trading_volume));
+                            }
                             ATL_TV.setText(String.format("$%.5f", atl));
                             ATLpercentageTV.setTextColor(Color.GREEN);
                             ATLpercentageTV.setText(String.format("%.2f", atl_percent) + "%");
