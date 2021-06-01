@@ -230,6 +230,16 @@ public class coin_market_data_chart extends AppCompatActivity {
                                 trading_volume /= 1000000.00;
                                 tradingVolumeTV.setText(String.format("$%.2f Million", trading_volume));
                             }
+                            else if(trading_volume > 1000.00 && trading_volume < 1000000.00)
+                            {
+                                trading_volume /= 1000.00;
+                                tradingVolumeTV.setText(String.format("$%.2f Thousand", trading_volume));
+                            }
+                            else
+                            {
+
+                                tradingVolumeTV.setText(String.format("$%.2f ", trading_volume));
+                            }
                             ATL_TV.setText(String.format("$%.5f", atl));
                             ATLpercentageTV.setTextColor(Color.GREEN);
                             ATLpercentageTV.setText(String.format("%.2f", atl_percent) + "%");

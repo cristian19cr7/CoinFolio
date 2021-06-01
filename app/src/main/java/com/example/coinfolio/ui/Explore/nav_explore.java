@@ -1,8 +1,10 @@
 package com.example.coinfolio.ui.Explore;
 
+import androidx.annotation.RequiresApi;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,6 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.SearchView;
@@ -34,33 +37,129 @@ import com.example.coinfolio.Coin;
 import com.example.coinfolio.R;
 import com.example.coinfolio.VolleyCallback;
 import com.example.coinfolio.ui.Addcoins.AddAssetInfo;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
 import static com.android.volley.VolleyLog.TAG;
 
+enum sortingStates{
+    desc, asc, NA
+}
 public class nav_explore extends Fragment implements AddCoinAdapter.ViewHolder.AssetSelectedListener{
     private List<Coin> list = new ArrayList<>();
+    private List<Coin> orginalList = new ArrayList<>();
     private AddCoinAdapter addCoinAdapter = new AddCoinAdapter(list, this);
+    private Button marketCapSortBtn, coinSortBtn, percentChangeSortBtn;
+    private sortingStates marketCapSortingState = sortingStates.NA;
+    private sortingStates coinSortState = sortingStates.NA;
+    private sortingStates percentChangeSortState = sortingStates.NA;
     //private ProgressBar progressBar;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.nav_explore_fragment, container, false);
-
-
+        marketCapSortBtn = view.findViewById(R.id.market_cap_sortBTN);
+        coinSortBtn = view.findViewById(R.id.coin_name_sortBTN);
+        percentChangeSortBtn = view.findViewById(R.id.price_percent_changeSortBTN);
         setHasOptionsMenu(true);
         getListOfCoins();
         RV(view);
 
+        marketCapSortBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                marketCapSortingState = sortBtnUpdate(marketCapSortBtn, marketCapSortingState);
+                if(marketCapSortingState == sortingStates.asc)
+                {
+                    Collections.sort(list, Coin.RankSortAscComparator);
+                }
+                else
+                {
+                    Collections.sort(list, Coin.RankSortDescComparator);
+                }
+                addCoinAdapter.notifyDataSetChanged();
+                //reset visuals for the other sorting buttons
+                coinSortBtn.setText("Coin ");
+                percentChangeSortBtn.setText("24h ");
+
+            }
+        });
+
+        coinSortBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                coinSortState = sortBtnUpdate(coinSortBtn, coinSortState);
+                if(coinSortState == sortingStates.asc)
+                {
+                    Collections.sort(list, Coin.CoinNameSortAscComparator);
+                }
+                else
+                {
+                    Collections.sort(list, Coin.CoinNameSortDescComparator);
+                }
+                addCoinAdapter.notifyDataSetChanged();
+                //reset visuals for the other sorting buttons
+                marketCapSortBtn.setText("Rank ");
+                percentChangeSortBtn.setText("24h ");
+            }
+        });
+
+        percentChangeSortBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                percentChangeSortState = sortBtnUpdate(percentChangeSortBtn, percentChangeSortState);
+                if(percentChangeSortState == sortingStates.asc)
+                {
+                    Collections.sort(list, Coin.percentSortAscComparator);
+                }
+                else
+                {
+                    Collections.sort(list, Coin.percentSortDescComparator);
+                }
+                addCoinAdapter.notifyDataSetChanged();
+
+                //reset visuals for the other sorting buttons
+                marketCapSortBtn.setText("Rank ");
+                coinSortBtn.setText("Coin ");
+            }
+        });
 
         return view;
+    }
+
+    public sortingStates sortBtnUpdate(Button currentBtn, sortingStates state)
+    {
+        String name;
+        if(state != sortingStates.NA)
+            name = currentBtn.getText().subSequence(0, currentBtn.getText().toString().length()-1).toString();
+        else
+            name = currentBtn.getText().toString();
+        if(state == sortingStates.NA)
+        {
+            currentBtn.setText(name + "▲");
+            return sortingStates.desc;
+        }
+
+        else if(state == sortingStates.desc)
+        {
+            currentBtn.setText(name + "▼");
+            return sortingStates.asc;
+        }
+        else
+        {
+            currentBtn.setText(name +"▲");
+            return sortingStates.desc;
+        }
     }
 
     public void RV(View v){
@@ -95,6 +194,7 @@ public class nav_explore extends Fragment implements AddCoinAdapter.ViewHolder.A
                                     tempCoin.price_change_percentage_24h = temp.getDouble("price_change_percentage_24h");
                                 list.add(tempCoin);
                             }
+                            orginalList.addAll(list);
                             addCoinAdapter.notifyDataSetChanged();
                             //progressBar.setVisibility(View.INVISIBLE);
                         } catch (JSONException e) {
@@ -120,7 +220,8 @@ public class nav_explore extends Fragment implements AddCoinAdapter.ViewHolder.A
         getActivity().getMenuInflater().inflate(R.menu.searchmenu, menu);
         MenuItem menuItem = menu.findItem(R.id.search_menu);
         SearchView searchView = (SearchView) menuItem.getActionView();
-
+        list.clear();
+        list.addAll(orginalList);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -140,7 +241,7 @@ public class nav_explore extends Fragment implements AddCoinAdapter.ViewHolder.A
     @Override
     public void OnAssetSelected(int position) {
         Intent intent = new Intent(getContext(), coin_market_data_chart.class);
-        intent.putExtra("coin_id", list.get(position).coin_ID);
+        intent.putExtra("coin_id", list.get(position).getCoin_ID());
         startActivity(intent);
     }
 }
