@@ -41,7 +41,7 @@
         <RadioGroup
             android:id="@+id/radioGroup"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="64dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
@@ -52,10 +52,10 @@
             <RadioButton
                 android:id="@+id/radioButton"
                 style="@style/CustomRadioBtn"
-                android:layout_width="130dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
                 android:text="@string/Day"
+                android:layout_weight="1"
                 android:textSize="12sp"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF" />
@@ -63,10 +63,10 @@
             <RadioButton
                 android:id="@+id/radioButton2"
                 style="@style/CustomRadioBtn"
-                android:layout_width="130dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
                 android:textSize="12sp"
+                android:layout_weight="1"
                 android:text="@string/Week"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF" />
@@ -75,10 +75,9 @@
             <RadioButton
                 android:id="@+id/radioButton3"
                 style="@style/CustomRadioBtn"
-                android:layout_width="110dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center_horizontal"
                 android:textSize="12sp"
                 android:text="@string/Month"
                 android:textAlignment="center"
