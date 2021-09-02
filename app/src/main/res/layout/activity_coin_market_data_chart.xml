@@ -55,7 +55,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/Day"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:gravity="center_horizontal" />
 
         <RadioButton
             android:id="@+id/explore_week"
@@ -64,7 +65,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/Week"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:gravity="center_horizontal" />
 
         <RadioButton
             android:id="@+id/explore_month"
@@ -73,7 +75,18 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/Month"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:gravity="center_horizontal" />
+
+        <RadioButton
+            android:id="@+id/explore_year"
+            style="@style/CustomRadioBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/Year"
+            android:textAlignment="center"
+            android:gravity="center_horizontal" />
 
 
     </RadioGroup>
@@ -104,7 +117,7 @@
         app:layout_constraintTop_toBottomOf="@+id/explore_radio_group"
         app:layout_constraintVertical_bias="0.349" />
 
-    <TextView
+    <com.robinhood.ticker.TickerView
         android:id="@+id/explore_scrub"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

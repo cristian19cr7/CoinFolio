@@ -241,19 +241,21 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
                     }
                 }
             });
-            sparkView.setLineColor(getResources().getColor(R.color.colorAccent));
+
+            if(percentage >= 0.0)
+            {
+                sparkView.setLineColor(Color.GREEN);
+                portfolioPercentage.setTextColor(Color.GREEN);
+            } else
+            {
+                sparkView.setLineColor(Color.RED);
+                portfolioPercentage.setTextColor(Color.RED);
+            }
+
             sparkView.setPadding(20,20,20,0);
             sparkView.setLineWidth(6.5f);
             textView.setText(String.format("$%.2f",sparkArr[sparkArr.length-1]),true);
             portfolioPercentage.setText(String.format("%.2f", percentage)+"%");
-            if(percentage < 0.0)
-            {
-                portfolioPercentage.setTextColor(Color.RED);
-            }
-            else
-            {
-                portfolioPercentage.setTextColor(Color.GREEN);
-            }
             progressBar.setVisibility(View.INVISIBLE);
         }
 

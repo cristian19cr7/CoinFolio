@@ -23,6 +23,8 @@ import android.widget.Toast;
 import com.example.coinfolio.R;
 import com.example.coinfolio.VolleySingleton;
 import com.robinhood.spark.SparkView;
+import com.robinhood.ticker.TickerUtils;
+import com.robinhood.ticker.TickerView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -30,8 +32,8 @@ import org.json.JSONObject;
 import java.util.Arrays;
 
 public class coin_market_data_chart extends AppCompatActivity {
-
-    private TextView marketCapTV,tradingVolumeTV, priceScrub, ATL_TV, ATLpercentageTV, ATH_TV, ATHpercentageTV, AssetNameSymbol;
+    private TickerView priceScrub;
+    private TextView marketCapTV,tradingVolumeTV, ATL_TV, ATLpercentageTV, ATH_TV, ATHpercentageTV, AssetNameSymbol;
     private SparkView sparkView;
     private float[] coinSparkData;
     private RadioGroup chartTimeframes;
@@ -56,6 +58,8 @@ public class coin_market_data_chart extends AppCompatActivity {
         loadingSparkLine = findViewById(R.id.explore_progress);
         loadingSparkLine.setVisibility(View.VISIBLE);
 
+        priceScrub.setCharacterLists(TickerUtils.provideNumberList());
+        priceScrub.setAnimationDuration(400);
         getSparklineData(asset,1);
 
 
@@ -80,6 +84,10 @@ public class coin_market_data_chart extends AppCompatActivity {
                         loadingSparkLine.setVisibility(View.VISIBLE);
                         getSparklineData(asset, 30);
                         break;
+                    case "Year":
+                        loadingSparkLine.setVisibility(View.VISIBLE);
+                        getSparklineData(asset, 360);
+                        break;
 
                 }
             }
@@ -101,15 +109,15 @@ public class coin_market_data_chart extends AppCompatActivity {
                     double price_scrub = Double.parseDouble(value.toString());
                     if(price_scrub > 2.01)
                     {
-                        priceScrub.setText(String.format("$%.2f", price_scrub));
+                        priceScrub.setText(String.format("$%.2f", price_scrub), true);
                     }
                     else if(price_scrub < 0.0001)
                     {
-                        priceScrub.setText(String.format("$%.8f", price_scrub));
+                        priceScrub.setText(String.format("$%.8f", price_scrub), true);
                     }
                     else
                     {
-                        priceScrub.setText(String.format("$%.5f", price_scrub));
+                        priceScrub.setText(String.format("$%.5f", price_scrub), true);
                     }
 
                 }
@@ -117,14 +125,14 @@ public class coin_market_data_chart extends AppCompatActivity {
                 {
                     if(coinSparkData[current_price] > 2.01)
                     {
-                        priceScrub.setText(String.format("$%.2f", coinSparkData[current_price]));
+                        priceScrub.setText(String.format("$%.2f", coinSparkData[current_price]), true);
                     }
                     else if(coinSparkData[current_price] < 0.0001)
                     {
-                        priceScrub.setText(String.format("$%.8f", coinSparkData[current_price]));
+                        priceScrub.setText(String.format("$%.8f", coinSparkData[current_price]), true);
                     }
                     else {
-                        priceScrub.setText(String.format("$%.5f", coinSparkData[current_price]));
+                        priceScrub.setText(String.format("$%.5f", coinSparkData[current_price]), true);
                     }
                 }
 
@@ -133,15 +141,15 @@ public class coin_market_data_chart extends AppCompatActivity {
         });
         if(coinSparkData[current_price] > 2.01)
         {
-            priceScrub.setText(String.format("$%.2f", coinSparkData[current_price]));
+            priceScrub.setText(String.format("$%.2f", coinSparkData[current_price]), true);
         }
         else if(coinSparkData[current_price] < 0.0001)
         {
-            priceScrub.setText(String.format("$%.8f", coinSparkData[current_price]));
+            priceScrub.setText(String.format("$%.8f", coinSparkData[current_price]), true);
         }
         else
         {
-            priceScrub.setText(String.format("$%.5f", coinSparkData[current_price]));
+            priceScrub.setText(String.format("$%.5f", coinSparkData[current_price]),true);
         }
     }
 

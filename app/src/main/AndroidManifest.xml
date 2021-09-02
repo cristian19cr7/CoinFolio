@@ -17,7 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.home.assetTransaction"></activity>
+        <activity android:name=".Profile_Screen"></activity>
+        <activity android:name=".ui.home.assetTransaction" />
         <activity
             android:name=".ui.Explore.coin_market_data_chart"
             android:label="@string/app_name"

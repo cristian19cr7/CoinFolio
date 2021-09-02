@@ -30,7 +30,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import static com.google.android.gms.auth.api.signin.GoogleSignIn.getClient;
 
 public class MainActivity extends AppCompatActivity {
-
+    private User CurrUser = User.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -74,6 +74,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             return true;
+        }
+        else if(item.getItemId() == R.id.myPortfolio)
+        {
+            Toast.makeText(getApplicationContext(), "test ", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(MainActivity.this, Profile_Screen.class));
         }
         return super.onOptionsItemSelected(item);
     }
