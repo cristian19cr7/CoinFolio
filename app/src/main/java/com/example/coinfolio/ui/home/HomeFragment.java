@@ -362,6 +362,24 @@ public class HomeFragment extends Fragment implements PortfolioAdapter.ViewHolde
 
                 }
                 portfolioAdapter.notifyDataSetChanged();
+
+                //display the day on the home page
+                if(coin_portfolio.size() == 0)
+                {
+                    float[] emptyPortfolio = new float[100];
+                    Arrays.fill(emptyPortfolio, 0.0f);
+                    drawSpark(null, emptyPortfolio);
+                }
+                else
+                {
+                    progressBar.setVisibility(View.VISIBLE);
+                    getSparkData(url, urlContinue, "1", new VolleyCallback() {
+                        @Override
+                        public void OnSuccess(int i, float[] portfolioArr) {
+                            completeAllcoinData();
+                            //drawSpark(null,portfolioArr);
+                        }},0,null);
+                }
             }
 
             @Override

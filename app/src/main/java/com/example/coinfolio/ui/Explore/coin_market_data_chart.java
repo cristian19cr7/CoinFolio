@@ -33,7 +33,7 @@ import java.util.Arrays;
 
 public class coin_market_data_chart extends AppCompatActivity {
     private TickerView priceScrub;
-    private TextView marketCapTV,tradingVolumeTV, ATL_TV, ATLpercentageTV, ATH_TV, ATHpercentageTV, AssetNameSymbol;
+    private TextView marketCapTV,tradingVolumeTV, ATL_TV, ATLpercentageTV, ATH_TV, ATHpercentageTV, AssetNameSymbol, circulating_supplyTV, max_supplyTV;
     private SparkView sparkView;
     private float[] coinSparkData;
     private RadioGroup chartTimeframes;
@@ -57,7 +57,8 @@ public class coin_market_data_chart extends AppCompatActivity {
         chartTimeframes = findViewById(R.id.explore_radio_group);
         loadingSparkLine = findViewById(R.id.explore_progress);
         loadingSparkLine.setVisibility(View.VISIBLE);
-
+        circulating_supplyTV = findViewById(R.id.circulating_supply_TV);
+        max_supplyTV = findViewById(R.id.max_supply_TV);
         priceScrub.setCharacterLists(TickerUtils.provideNumberList());
         priceScrub.setAnimationDuration(400);
         getSparklineData(asset,1);
@@ -215,9 +216,28 @@ public class coin_market_data_chart extends AppCompatActivity {
                             Double atl_percent = market_data.getJSONObject("atl_change_percentage").getDouble("usd");
                             Double ath = market_data.getJSONObject("ath").getDouble("usd");
                             Double ath_percent = market_data.getJSONObject("ath_change_percentage").getDouble("usd");
+                            long circulating_supply = market_data.getLong("circulating_supply");
                             String coinName = jsonObject.getString("name");
                             String coinSymbol = jsonObject.getString("symbol");
-                            if(market_cap > 1000000000.00 && market_cap < 1000000000000.00)
+
+                            long max_supply;
+                            if(market_data.isNull("max_supply"))
+                            {
+                                max_supplyTV.setText("∞");
+                            }
+                            else
+                            {
+                                max_supply = market_data.getLong("max_supply");
+                                max_supplyTV.setText(String.format("%,d", max_supply));
+                            }
+
+
+                            if(market_cap > 1000000000000.00)
+                            {
+                                market_cap /= 1000000000000.00;
+                                marketCapTV.setText((String.format("$%.2f Trillion", market_cap)));
+                            }
+                            else if(market_cap > 1000000000.00 && market_cap < 1000000000000.00)
                             {
                                 market_cap /= 1000000000.00;
                                 marketCapTV.setText(String.format("$%.2f Billion", market_cap));
@@ -248,6 +268,7 @@ public class coin_market_data_chart extends AppCompatActivity {
 
                                 tradingVolumeTV.setText(String.format("$%.2f ", trading_volume));
                             }
+
                             ATL_TV.setText(String.format("$%.5f", atl));
                             ATLpercentageTV.setTextColor(Color.GREEN);
                             ATLpercentageTV.setText(String.format("%.2f", atl_percent) + "%");
@@ -258,9 +279,12 @@ public class coin_market_data_chart extends AppCompatActivity {
 
                             AssetNameSymbol.setText(String.format("%s (%s)", coinName, coinSymbol.toUpperCase()));
 
+                            circulating_supplyTV.setText(String.format("%,d", circulating_supply));
+
+
                         }catch (Exception e)
                         {
-                            Toast.makeText(getApplicationContext(),"error", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),e.toString(), Toast.LENGTH_SHORT).show();
                         }
                     }
                 }, new Response.ErrorListener() {
