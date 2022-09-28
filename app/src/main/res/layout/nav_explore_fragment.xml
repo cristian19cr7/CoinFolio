@@ -25,6 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_gravity="start"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/asset_transaction_style"
         android:text="Rank"
         android:textAlignment="viewStart"
@@ -35,13 +36,14 @@
         app:layout_constraintHorizontal_bias="0.05"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.35" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/coin_name_sortBTN"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_gravity="start"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/asset_transaction_style"
         android:text="Coin"
         android:textAlignment="viewStart"
@@ -52,12 +54,14 @@
         app:layout_constraintHorizontal_bias="0.32"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.35" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/price_percent_changeSortBTN"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
+        android:layout_gravity="start"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/asset_transaction_style"
         android:text="24h"
         android:textAlignment="center"
@@ -67,6 +71,5 @@
         app:layout_constraintHorizontal_bias="0.95"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.34"
-        android:layout_gravity="start" />
+        app:layout_constraintVertical_bias="1.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

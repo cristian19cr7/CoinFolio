@@ -7,6 +7,11 @@
         <entry key="..\:/Users/Cristian Aguilar/Desktop/CoinFolio/app/src/main/res/layout/activity_coin_market_data_chart.xml" value="0.33" />
         <entry key="..\:/Users/Cristian Aguilar/Desktop/CoinFolio/app/src/main/res/layout/activity_profile__screen.xml" value="0.3101851851851852" />
         <entry key="..\:/Users/Cristian Aguilar/Desktop/CoinFolio/app/src/main/res/layout/fragment_home.xml" value="0.3101851851851852" />
+        <entry key="..\:/Users/Cristian Aguilar/Desktop/coinfolio/CoinFolio/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Cristian Aguilar/Desktop/coinfolio/CoinFolio/app/src/main/res/layout/fragment_home.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Cristian Aguilar/Desktop/coinfolio/CoinFolio/app/src/main/res/layout/nav_explore_fragment.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Cristian Aguilar/Desktop/coinfolio/CoinFolio/app/src/main/res/menu/bottom_nav_menu.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Cristian Aguilar/Desktop/coinfolio/CoinFolio/app/src/main/res/menu/navigation_menu.xml" value="0.36666666666666664" />
       </map>
     </option>
   </component>
@@ -56,7 +61,7 @@
       </value>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

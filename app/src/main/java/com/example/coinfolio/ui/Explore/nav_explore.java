@@ -37,6 +37,7 @@ import com.example.coinfolio.Coin;
 import com.example.coinfolio.R;
 import com.example.coinfolio.VolleyCallback;
 import com.example.coinfolio.ui.Addcoins.AddAssetInfo;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -63,15 +64,19 @@ public class nav_explore extends Fragment implements AddCoinAdapter.ViewHolder.A
     private sortingStates marketCapSortingState = sortingStates.NA;
     private sortingStates coinSortState = sortingStates.NA;
     private sortingStates percentChangeSortState = sortingStates.NA;
+    RecyclerView recyclerView;
     //private ProgressBar progressBar;
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.nav_explore_fragment, container, false);
+        RequestQueue queue = Volley.newRequestQueue(getContext());
         marketCapSortBtn = view.findViewById(R.id.market_cap_sortBTN);
         coinSortBtn = view.findViewById(R.id.coin_name_sortBTN);
         percentChangeSortBtn = view.findViewById(R.id.price_percent_changeSortBTN);
         setHasOptionsMenu(true);
-        getListOfCoins();
+        queue.add(getListOfCoins("1"));
+        queue.add(getListOfCoins("2"));
+        Collections.sort(list, Coin.RankSortAscComparator);
         RV(view);
 
         marketCapSortBtn.setOnClickListener(new View.OnClickListener() {
@@ -134,6 +139,7 @@ public class nav_explore extends Fragment implements AddCoinAdapter.ViewHolder.A
             }
         });
 
+
         return view;
     }
 
@@ -163,16 +169,17 @@ public class nav_explore extends Fragment implements AddCoinAdapter.ViewHolder.A
     }
 
     public void RV(View v){
-        RecyclerView recyclerView = v.findViewById(R.id.explore_rv);
+        recyclerView = v.findViewById(R.id.explore_rv);
         recyclerView.setAdapter(addCoinAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         addCoinAdapter.notifyDataSetChanged();
 
+
     }
 
-    public void getListOfCoins()
+    public StringRequest getListOfCoins(String page)
     {
-        String URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false";
+        String URL = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=" + page + "&sparkline=false";
         RequestQueue queue = Volley.newRequestQueue(getContext());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
                 new Response.Listener<String>() {
@@ -208,7 +215,7 @@ public class nav_explore extends Fragment implements AddCoinAdapter.ViewHolder.A
 
             }
         });
-        queue.add(stringRequest);
+        return stringRequest;
 
 
     }
